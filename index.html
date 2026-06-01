@@ -635,6 +635,21 @@
       <div class="welcome-icon">⌨</div>
       <h2>Выбери билет или режим</h2>
       <p>Вопросы по реальной программе экзамена. Доступны все 20 билетов.</p>
+      <div class="dashboard" style="margin-top: 24px; border: 2px solid var(--border-hard); background: var(--surface-2); padding: 16px; text-align: left; max-width: 440px; margin-left: auto; margin-right: auto; box-shadow: 6px 6px 0 var(--border-hard);">
+        <div style="font-family: var(--display); font-size: 0.85rem; font-weight: 800; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+          <span>🏆 Лидеры группы</span>
+          <span style="font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim);">Max: 7/10</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: 0.8rem; border-bottom: 1px solid var(--border-hard); padding-bottom: 8px; margin-bottom: 8px; font-family: var(--mono);">
+          <span style="color: var(--text-bright);">@karridaa</span><span style="color: var(--correct); font-weight: bold;">7 баллов</span>
+          <span style="color: var(--text-bright);">@thqbright</span><span style="color: var(--correct); font-weight: bold;">7 баллов</span>
+          <span style="color: var(--text-bright);">@Luxor_7</span><span style="color: var(--correct); font-weight: bold;">6 баллов</span>
+          <span style="color: var(--text-bright);">@holywoonLagut</span><span style="color: var(--correct); font-weight: bold;">4 балла</span>
+        </div>
+        <div style="font-size: 0.65rem; color: var(--text-dim); line-height: 1.4; font-family: var(--mono);">
+          💡 <strong>7 баллов</strong> — это максимальный балл, полученный за реальный экзамен у всей группы.
+        </div>
+      </div>
     </div>
 
     <div id="questionArea" class="hidden"></div>
@@ -955,7 +970,22 @@ function setMode(m){
     tg.classList.remove('hidden');ws.classList.remove('hidden');
     $('questionArea').classList.add('hidden');$('resultsScreen').classList.add('hidden');
     $('progressWrap').classList.add('hidden');$('kbdHint').classList.add('hidden');
-    ws.innerHTML=`<div class="welcome-icon">⌨</div><h2>Выбери билет</h2><p>Доступны все 20 билетов по программе экзамена.</p>`;
+    ws.innerHTML=`<div class="welcome-icon">⌨</div><h2>Выбери билет</h2><p>Доступны все 20 билетов по программе экзамена.</p>
+      <div class="dashboard" style="margin-top: 24px; border: 2px solid var(--border-hard); background: var(--surface-2); padding: 16px; text-align: left; max-width: 440px; margin-left: auto; margin-right: auto; box-shadow: 6px 6px 0 var(--border-hard);">
+        <div style="font-family: var(--display); font-size: 0.85rem; font-weight: 800; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+          <span>🏆 Лидеры группы</span>
+          <span style="font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim);">Max: 7/10</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: 0.8rem; border-bottom: 1px solid var(--border-hard); padding-bottom: 8px; margin-bottom: 8px; font-family: var(--mono);">
+          <span style="color: var(--text-bright);">@karridaa</span><span style="color: var(--correct); font-weight: bold;">7 баллов</span>
+          <span style="color: var(--text-bright);">@thqbright</span><span style="color: var(--correct); font-weight: bold;">7 баллов</span>
+          <span style="color: var(--text-bright);">@Luxor_7</span><span style="color: var(--correct); font-weight: bold;">6 баллов</span>
+          <span style="color: var(--text-bright);">@holywoonLagut</span><span style="color: var(--correct); font-weight: bold;">4 балла</span>
+        </div>
+        <div style="font-size: 0.65rem; color: var(--text-dim); line-height: 1.4; font-family: var(--mono);">
+          💡 <strong>7 баллов</strong> — это максимальный балл, полученный за реальный экзамен у всей группы.
+        </div>
+      </div>`;
   } else {
     tg.classList.add('hidden');ws.classList.add('hidden');
     if(m==='random'){go(shuffle(Array.from({length:Q.length},(_,i)=>i)).slice(0,17));}

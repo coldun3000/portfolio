@@ -54,6 +54,8 @@
       --correct-dim: rgba(0, 255, 102, 0.08);
       --wrong: #ff3366;
       --wrong-dim: rgba(255, 51, 102, 0.08);
+      --missed: #ffaa00;
+      --missed-dim: rgba(255, 170, 0, 0.08);
       --mono: 'JetBrains Mono', monospace;
       --display: 'Unbounded', sans-serif;
     }
@@ -303,6 +305,10 @@
       border-color: var(--wrong) !important;
       background: var(--wrong-dim) !important;
     }
+    .option-item.missed {
+      border-color: var(--missed) !important;
+      background: var(--missed-dim) !important;
+    }
 
     /* Custom Checkbox */
     .control-indicator {
@@ -328,6 +334,10 @@
       border-color: var(--wrong);
       background: var(--wrong);
     }
+    .option-item.missed .control-indicator {
+      border-color: var(--missed);
+      background: var(--missed);
+    }
     .control-indicator::after {
       content: '';
       display: none;
@@ -337,7 +347,8 @@
     }
     .option-item.selected .control-indicator::after,
     .option-item.correct .control-indicator::after,
-    .option-item.wrong .control-indicator::after {
+    .option-item.wrong .control-indicator::after,
+    .option-item.missed .control-indicator::after {
       display: block;
     }
 
@@ -2784,7 +2795,11 @@
           const isItemSelected = selectedSet.has(idx);
           
           if (isItemCorrect) {
-            el.classList.add('correct');
+            if (isItemSelected) {
+              el.classList.add('correct');
+            } else {
+              el.classList.add('missed');
+            }
           } else if (isItemSelected) {
             el.classList.add('wrong');
           }

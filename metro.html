@@ -1,0 +1,2851 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Законодательная Метрология // ТЕСТ</title>
+  <!-- Telegram Mini App SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── ACCESS SCREENS ── */
+    #accessScreen {
+      position: fixed; inset: 0; z-index: 8000;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+    }
+    #accessScreen .ac-box {
+      max-width: 400px; width: 90%;
+      text-align: center; padding: 40px 24px;
+      border: 2px solid var(--border); background: var(--surface);
+    }
+    #accessScreen .ac-icon { font-size: 2.8rem; margin-bottom: 16px; }
+    #accessScreen .ac-title {
+      font-family: var(--display); font-size: 1.3rem; font-weight: 800;
+      color: var(--text-bright); margin-bottom: 8px;
+    }
+    #accessScreen .ac-sub {
+      font-size: 0.8rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 20px;
+    }
+    #accessScreen .ac-btn {
+      display: inline-block; padding: 12px 24px;
+      background: var(--accent); color: var(--bg);
+      font-family: var(--display); font-size: 0.82rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      border: none; cursor: pointer; text-decoration: none;
+      touch-action: manipulation;
+    }
+    #accessScreen.hidden { display: none !important; }
+
+    :root {
+      --bg: #080808;
+      --surface: #121212;
+      --surface-2: #1a1a1a;
+      --surface-3: #222222;
+      --border: #282828;
+      --accent: #00ffcc;
+      --accent-dim: rgba(0, 255, 204, 0.1);
+      --text: #e0e0e0;
+      --text-dim: #888;
+      --text-bright: #ffffff;
+      --correct: #00ff66;
+      --correct-dim: rgba(0, 255, 102, 0.08);
+      --wrong: #ff3366;
+      --wrong-dim: rgba(255, 51, 102, 0.08);
+      --mono: 'JetBrains Mono', monospace;
+      --display: 'Unbounded', sans-serif;
+    }
+
+    body {
+      font-family: var(--mono);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    header {
+      border-bottom: 2px solid var(--accent);
+      padding: 24px 16px;
+      background: var(--surface);
+    }
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    h1 {
+      font-family: var(--display);
+      font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+      font-weight: 900;
+      color: var(--text-bright);
+      letter-spacing: -0.04em;
+    }
+    h1 span { color: var(--accent); }
+
+    /* ── STATS ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-bottom: 20px;
+      background: var(--border);
+      border: 2px solid var(--border);
+    }
+    .stat-cell {
+      background: var(--surface);
+      padding: 12px 8px;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: var(--display);
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      font-weight: 800;
+      color: var(--text-bright);
+      line-height: 1;
+    }
+    .stat-num.s-ok { color: var(--correct); }
+    .stat-num.s-err { color: var(--wrong); }
+    .stat-num.s-pct { color: var(--accent); }
+    .stat-lbl {
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* ── MODES ── */
+    .modes {
+      display: flex;
+      gap: 0;
+      margin-bottom: 16px;
+      border: 2px solid var(--border);
+      overflow-x: auto;
+    }
+    .mode-btn {
+      flex: 1;
+      min-width: 0;
+      padding: 11px 6px;
+      background: var(--surface);
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: clamp(0.6rem, 1.6vw, 0.72rem);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: none;
+      border-right: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .mode-btn:last-child { border-right: none; }
+    .mode-btn:hover { background: var(--surface-2); color: var(--text); }
+    .mode-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 800;
+    }
+
+    /* ── MAIN CONTAINER ── */
+    .container {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TICKET SELECT SCREEN ── */
+    .screen {
+      display: none;
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .screen.active { display: flex; flex-direction: column; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .grid-bento {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .bento-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .bento-card:hover {
+      border-color: var(--accent);
+      background: var(--surface-2);
+      transform: translateY(-2px);
+    }
+    .bento-card h3 {
+      font-family: var(--display);
+      font-size: 1.1rem;
+      color: var(--text-bright);
+      margin-bottom: 12px;
+    }
+    .bento-card p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .bento-action {
+      align-self: flex-start;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── QUIZ SCREEN ── */
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 16px;
+    }
+    .quiz-title {
+      font-family: var(--display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-bright);
+    }
+    .progress-text {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 4px;
+      background: var(--surface-3);
+      margin-bottom: 24px;
+    }
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .question-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      padding: 32px 24px;
+      margin-bottom: 20px;
+    }
+    .question-text {
+      font-family: var(--display);
+      font-size: clamp(0.95rem, 3vw, 1.15rem);
+      font-weight: 700;
+      color: var(--text-bright);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .option-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .option-item:hover {
+      border-color: var(--text-dim);
+      background: var(--surface-3);
+    }
+    .option-item.selected {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .option-item.correct {
+      border-color: var(--correct) !important;
+      background: var(--correct-dim) !important;
+    }
+    .option-item.wrong {
+      border-color: var(--wrong) !important;
+      background: var(--wrong-dim) !important;
+    }
+
+    /* Custom Checkbox */
+    .control-indicator {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--text-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+    .option-item.selected .control-indicator {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+    .option-item.correct .control-indicator {
+      border-color: var(--correct);
+      background: var(--correct);
+    }
+    .option-item.wrong .control-indicator {
+      border-color: var(--wrong);
+      background: var(--wrong);
+    }
+    .control-indicator::after {
+      content: '';
+      display: none;
+      width: 6px;
+      height: 6px;
+      background: var(--bg);
+    }
+    .option-item.selected .control-indicator::after,
+    .option-item.correct .control-indicator::after,
+    .option-item.wrong .control-indicator::after {
+      display: block;
+    }
+
+    .option-text {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .option-item.selected .option-text {
+      color: var(--text-bright);
+    }
+
+    /* ── ACTION BUTTONS ── */
+    .actions-panel {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .btn {
+      padding: 16px 28px;
+      font-family: var(--display);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-2);
+      border-color: var(--text-dim);
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 15px var(--accent);
+      transform: translateY(-1px);
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    /* ── EXPLANATION BOX ── */
+    .explanation-box {
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--surface-2);
+      border-left: 4px solid var(--accent);
+      display: none;
+      animation: slideDown 0.3s ease forwards;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .explanation-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+      letter-spacing: 0.08em;
+    }
+    .explanation-text {
+      font-size: 0.8rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── RESULTS SCREEN ── */
+    .results-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .results-title {
+      font-family: var(--display);
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--text-bright);
+      margin-bottom: 12px;
+    }
+    .results-score {
+      font-family: var(--display);
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin: 20px 0;
+    }
+    .results-score span {
+      font-size: 1.5rem;
+      color: var(--text-dim);
+    }
+    .results-text {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto 30px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .actions-panel {
+        flex-direction: column-reverse;
+      }
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Access gate: shows during check, then hides or shows denied -->
+  <div id="accessScreen">
+    <div class="ac-box">
+      <div class="ac-icon" id="acIcon">⏳</div>
+      <div class="ac-title" id="acTitle">Проверка доступа</div>
+      <div class="ac-sub" id="acSub">Пожалуйста, подождите...</div>
+      <div id="acBtnWrap"></div>
+    </div>
+  </div>
+
+  <header>
+    <div class="header-content">
+      <h1>ЗАКОНОДАТЕЛЬНАЯ <span>МЕТРОЛОГИЯ</span></h1>
+      <button class="reset-stats-btn" onclick="resetStats()" style="background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: var(--mono); font-size: 0.65rem; padding: 6px 10px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; transition: all 0.2s;" onmouseover="this.style.color='var(--accent)'; this.style.borderColor='var(--accent)';" onmouseout="this.style.color='var(--text-dim)'; this.style.borderColor='var(--border)';">сбросить статистику</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- ── STATS BAR ── -->
+    <div class="stats" id="statsBar">
+      <div class="stat-cell"><div class="stat-num" id="sTotal">0</div><div class="stat-lbl">всего</div></div>
+      <div class="stat-cell"><div class="stat-num s-ok" id="sOk">0</div><div class="stat-lbl">верно</div></div>
+      <div class="stat-cell"><div class="stat-num s-err" id="sErr">0</div><div class="stat-lbl">ошибки</div></div>
+      <div class="stat-cell"><div class="stat-num s-pct" id="sPct">—</div><div class="stat-lbl">точность</div></div>
+    </div>
+
+    <!-- ── MODES BAR ── -->
+    <div class="modes">
+      <button class="mode-btn active" id="modeTicket" onclick="setMode('ticket')">// билеты</button>
+      <button class="mode-btn" id="modeRandom" onclick="setMode('random')">// 10 случайных</button>
+      <button class="mode-btn" id="modeAll" onclick="setMode('all')">// все вопросы</button>
+      <button class="mode-btn" id="modeErrors" onclick="setMode('errors')">// ошибки</button>
+    </div>
+
+    <!-- SCREEN 1: TICKET SELECT -->
+    <div id="selectScreen" class="screen active">
+      <h2 style="font-family: var(--display); font-size: 1.1rem; font-weight: 800; margin-bottom: 20px;">ВЫБЕРИТЕ ЭКЗАМЕНАЦИОННЫЙ БИЛЕТ:</h2>
+      <div class="grid-bento" id="ticketsGrid">
+        <!-- Bento tickets injected here -->
+      </div>
+    </div>
+
+    <!-- SCREEN 2: QUIZ -->
+    <div id="quizScreen" class="screen">
+      <div class="quiz-header">
+        <div class="quiz-title" id="currentTicketTitle">Билет</div>
+        <div class="progress-text" id="progressText">Вопрос 1 из 10</div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <div class="question-card">
+        <div class="question-text" id="questionText">Вопрос загружается...</div>
+        <div class="options-list" id="optionsList">
+          <!-- Options injected here -->
+        </div>
+        <div class="explanation-box" id="explanationBox">
+          <div class="explanation-title">Пояснение законодательства:</div>
+          <div class="explanation-text" id="explanationText">Обоснование правильного ответа...</div>
+        </div>
+      </div>
+
+      <div class="actions-panel">
+        <button class="btn btn-secondary" id="exitBtn" onclick="exitToMenu()">← Меню</button>
+        <button class="btn btn-primary" id="actionBtn" onclick="handleAction()" disabled>Ответить</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: RESULTS -->
+    <div id="resultsScreen" class="screen">
+      <div class="results-card">
+        <h2 class="results-title">Тестирование Завершено</h2>
+        <div class="results-score" id="resultsScore">0 <span>/ 10</span></div>
+        <p class="results-text" id="resultsText">Результат...</p>
+        <button class="btn btn-primary" onclick="exitToMenu()">Выбрать другой билет</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const ticketsData = {
+  "1": {
+    "title": "Билет 1",
+    "description": "10 вопросов • Метрологическая прослеживаемость, реестры, статусы эталонов и законодательная метрология.",
+    "questions": [
+      {
+        "text": "Свойство результата измерений, в соответствии с которым результат может быть связан со ссылкой через документированную непрерывную цепь калибровок, каждая из которых вносит вклад в неопределенность измерения - это:",
+        "options": [
+          "а) поверка;",
+          "б) метрологическая аттестация;",
+          "в) метрологическая прослеживаемость;",
+          "г) метрологическая оценка;",
+          "д) сличения."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Это стандартное определение метрологической прослеживаемости (metrological traceability) согласно Международному словарю по метрологии (VIM 3) и Закону Республики Беларусь 'Об обеспечении единства измерений'."
+      },
+      {
+        "text": "Совокупность сведения, формируемых Государственным комитетом по стандартизации Республики Беларусь, о средствах измерений, в отношении которых принято решение об утверждении типа средств измерений, и о выданных сертификатах об утверждении типа средств измерений - это:",
+        "options": [
+          "а) Государственный реестр средств измерений Республики Беларусь;",
+          "б) Государственный реестр эталонов Республики Беларусь;",
+          "в) Государственный реестр сертифицированных средств измерений Республики Беларусь;",
+          "г) Государственный реестр измерений Республики Беларусь;",
+          "д) Государственный реестр Республики Беларусь."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Согласно статье 20 Закона Республики Беларусь 'Об обеспечении единства измерений', Государственный комитет по стандартизации формирует и ведет Государственный реестр средств измерений Республики Беларусь."
+      },
+      {
+        "text": "Эталоны, применяемые в РБ, по статусу подразделяют на:",
+        "options": [
+          "а) национальные;",
+          "б) первичные;",
+          "в) исходные;",
+          "г) рабочие;",
+          "д) вторичные."
+        ],
+        "correct": [
+          0,
+          2,
+          3
+        ],
+        "explanation": "Согласно статье 12 Закона РБ 'Об обеспечении единства измерений', эталоны единиц величин по своему статусу подразделяются на национальные, исходные и рабочие."
+      },
+      {
+        "text": "Метрологические характеристики эталона, к которым устанавливаются обязательные требования:",
+        "options": [
+          "а) действительное значение или диапазон значений величины, воспроизводимой эталоном;",
+          "б) расширенная неопределенность измерения или характеристики погрешности (НСП, случайная погрешность, пределы допускаемой погрешности) при воспроизведении и передаче размера единицы величины;",
+          "в) гистерезис;",
+          "г) чувствительность;",
+          "д) методы исследования и применения эталона."
+        ],
+        "correct": [
+          0,
+          1
+        ],
+        "explanation": "Для эталонов устанавливаются жесткие обязательные требования к воспроизводимым значениям и к точностным характеристикам (расширенной неопределенности или погрешности) воспроизведения."
+      },
+      {
+        "text": "Сфера действия законодательной метрологии распространяется на измерения, выполняемые при:",
+        "options": [
+          "а) проведении экспертиз;",
+          "б) регистрации национальных спортивных рекордов;",
+          "в) осуществлении геодезической и картографической деятельности;",
+          "г) определении налоговой базы;",
+          "д) регистрации международных спортивных рекордов."
+        ],
+        "correct": [
+          0,
+          2,
+          3
+        ],
+        "explanation": "Согласно статье 16 Закона РБ 'Об обеспечении единства измерений', измерения при экспертизах, картографической/геодезической деятельности и расчете налогов входят в сферу законодательного контроля. Спортивные рекорды государством не контролируются."
+      },
+      {
+        "text": "Единообразие средств измерений - это:",
+        "options": [
+          "а) установление и применение научных и организационных основ, технических средств, правил и норм, необходимых для достижения единства и требуемой точности измерений;",
+          "б) состояние средств измерений, характеризующееся тем, что они проградуированы в узаконенных единицах и их метрологические свойства соответствуют нормам;",
+          "в) состояние средств измерений, при котором их показания выражены в узаконенных единицах и погрешности измерений известны с заданной вероятностью;",
+          "г) единство специальных средств для нахождения значений физических величин;",
+          "д) единство приемов сравнения измеряемой физической величины ее единицей в соответствии с реализованным принципом."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Единообразие СИ — это состояние средств измерений, характеризующееся тем, что они градуированы в узаконенных единицах, а их характеристики соответствуют стандартам."
+      },
+      {
+        "text": "Требования к защите программного обеспечения средств измерений на основе Директивы по измерительным приборам (MID):",
+        "options": [
+          "а) защита оригинальных программ от случайных изменений;",
+          "б) защита законодательно контролируемых программ от случайных изменений;",
+          "в) для законодательно контролируемых программ использовать только оригинальное ПО;",
+          "г) защита законодательно контролируемых программ от намеренных изменений;",
+          "д) для законодательно контролируемых программ использовать только утвержденное и проверенное ПО."
+        ],
+        "correct": [
+          1,
+          3,
+          4
+        ],
+        "explanation": "Европейская Директива по измерительным приборам (MID) и стандарты WELMEC требуют защиты законодательно контролируемого ПО как от случайных, так и от преднамеренных изменений, а также применения только прошедшего верификацию и утверждение ПО."
+      },
+      {
+        "text": "Дополнительные составляющие погрешностей результатов, обусловленные особенностями работы программы в конкретной вычислительной среде:",
+        "options": [
+          "а) округление промежуточных результатов;",
+          "б) ограничение разрядной сетки;",
+          "в) дискретизация по аргументу;",
+          "г) конечное число итераций;",
+          "д) использование конечных разложений в ряд."
+        ],
+        "correct": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "explanation": "Цифровые методические погрешности ПО возникают из-за ограничения разрядной сетки процессора, округления промежуточных результатов, конечного количества итераций и использования конечных разложений в ряд. Дискретизация по аргументу — это погрешность метода (АЦП), а не вычислительной среды."
+      },
+      {
+        "text": "Проведение работ по метрологической оценке, в ходе которых подтверждается соответствие средства измерений обязательным метрологическим требованиям - это:",
+        "options": [
+          "а) калибровки средства измерений;",
+          "б) испытания средств измерений;",
+          "в) сличения результатов измерений;",
+          "г) сличения эталонов;",
+          "д) поверка средства измерений."
+        ],
+        "correct": [
+          4
+        ],
+        "explanation": "По определению Закона Республики Беларусь 'Об обеспечении единства измерений', подтверждение соответствия СИ обязательным требованиям — это поверка СИ."
+      },
+      {
+        "text": "Совокупность сведений, формируемых Государственным комитетом по стандартизации Республики Беларусь, о средствах измерений, в отношении которых принято решение об утверждении типа средств измерений, и о выданных сертификатах об утверждении типа средств измерений - это:",
+        "options": [
+          "а) Государственный реестр средств измерений Республики Беларусь;",
+          "б) Государственный реестр эталонов Республики Беларусь;",
+          "в) Государственный реестр сертифицированных средств измерений Республики Беларусь;",
+          "г) Государственный реестр измерений Республики Беларусь;",
+          "д) Государственный реестр Республики Беларусь."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Повторяющийся вопрос: это Государственный реестр средств измерений Республики Беларусь."
+      }
+    ]
+  },
+  "2": {
+    "title": "Билет 2",
+    "description": "10 вопросов • Документ МОЗМ D1, виды метрологической оценки, понятия измерения и национального эталона.",
+    "questions": [
+      {
+        "text": "Перечислите законодательные положения, предлагаемые Документом МОЗМ D1:",
+        "options": [
+          "а) национальная политика в области метрологии;",
+          "б) национальные эталоны;",
+          "в) национальная система аккредитации;",
+          "г) национальная метрологическая инфраструктура;",
+          "д) национальная система подтверждения соответствия."
+        ],
+        "correct": [
+          0,
+          3
+        ],
+        "explanation": "Документ OIML D1 (МОЗМ D1) 'Закон о метрологии' рекомендует закреплять в законодательстве национальную политику в области метрологии и основы национальной метрологической инфраструктуры."
+      },
+      {
+        "text": "Метрологическая оценка включает в себя следующие виды работ:",
+        "options": [
+          "а) утверждение типа средства измерений;",
+          "б) оценка соответствия;",
+          "в) утверждение типа стандартного образца;",
+          "г) поверка;",
+          "д) калибровка."
+        ],
+        "correct": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "explanation": "Согласно статье 16 Закона РБ 'Об обеспечении единства измерений', метрологическая оценка включает в себя утверждение типа СИ, утверждение типа стандартного образца, поверку, калибровку, а также метрологическую экспертизу и метрологическую аттестацию."
+      },
+      {
+        "text": "Что понимают под измерением согласно Закону РБ 'Об обеспечении единства измерений'?",
+        "options": [
+          "а) процесс получения значения физической величины;",
+          "б) совокупность операций для определения погрешности измерения;",
+          "в) совокупность операций, выполняемых для определения значения величины;",
+          "г) совокупность операций, выполняемых для определения значения величины с заданной погрешностью;",
+          "д) совокупность операций, выполняемых для определения значения величины с неопределенностью."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Статья 1 Закона РБ 'Об обеспечении единства измерений' дает четкое определение: измерение — это совокупность операций, выполняемых для определения значения величины."
+      },
+      {
+        "text": "Дайте определение национального эталона:",
+        "options": [
+          "а) эталон, утвержденный решением Национального метрологического института...",
+          "б) эталон, утвержденный решением органов государственной метрологической службы...",
+          "в) эталон, утвержденный решением Совета Министров Республики Беларусь...",
+          "г) эталон, утвержденный решением региональной метрологической службы...",
+          "д) эталон, утвержденный решением Государственного комитета по стандартизации РБ в качестве национального эталона единицы величины."
+        ],
+        "correct": [
+          4
+        ],
+        "explanation": "Согласно законодательству РБ, эталон единицы величины утверждается в качестве национального эталона именно решением Государственного комитета по стандартизации Республики Беларусь (Госстандарта)."
+      },
+      {
+        "text": "Метрологическая оценка включает в себя следующие виды работ:",
+        "options": [
+          "а) калибровка;",
+          "б) метрологическая экспертиза;",
+          "в) метрологическая аттестация;",
+          "г) сличение результатов измерений;",
+          "д) метрологическое обеспечение."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "В число работ по метрологической оценке входят калибровка, метрологическая экспертиза, метрологическая аттестация и сличение результатов измерений. Метрологическое обеспечение — это общий термин всей инженерной деятельности."
+      },
+      {
+        "text": "Законодательная метрология - это:",
+        "options": [
+          "а) раздел метрологии, относящийся к деятельности, направленной на обеспечение единства и необходимой точности измерений, требующий регламентации со стороны государства;",
+          "б) раздел метрологии, обеспечивающий выражение показаний СИ в узаконенных единицах и погрешностей измерений с заданной вероятностью;",
+          "в) раздел метрологии, обеспечивающий выражение градуировку СИ в узаконенных единицах и соответствие их метрологических свойств нормам."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Законодательная метрология (legal metrology) — это часть метрологии, регламентируемая на уровне государства через обязательные требования."
+      },
+      {
+        "text": "Сфера действия законодательной метрологии распространяется на измерения, выполняемые при:",
+        "options": [
+          "а) проведении экспертиз;",
+          "б) регистрации национальных спортивных рекордов;",
+          "в) осуществлении геодезической и картографической деятельности;",
+          "г) определении налоговой базы;",
+          "д) регистрации международных спортивных рекордов."
+        ],
+        "correct": [
+          0,
+          2,
+          3
+        ],
+        "explanation": "В соответствии со статьей 16 Закона РБ, измерения при экспертизах, картографической/геодезической деятельности и расчете налогов входят в сферу законодательного контроля."
+      },
+      {
+        "text": "Метрологические характеристики эталона, к которым устанавливаются обязательные требования:",
+        "options": [
+          "а) действительное значение или диапазон значений величины, воспроизводимой эталоном;",
+          "б) расширенная неопределенность измерения или характеристики погрешности при воспроизведении и передаче размера единицы величины;",
+          "в) гистерезис;",
+          "г) чувствительность;",
+          "д) методы исследования и применения эталона."
+        ],
+        "correct": [
+          0,
+          1
+        ],
+        "explanation": "К обязательным метрологическим требованиям к эталонам относятся воспроизводимое значение (диапазон) и показатели точности (расширенная неопределенность или характеристики погрешности)."
+      },
+      {
+        "text": "Эталоны, применяемые в РБ, по статусу подразделяют на:",
+        "options": [
+          "а) национальные;",
+          "б) первичные;",
+          "в) исходные;",
+          "г) рабочие;",
+          "д) вторичные."
+        ],
+        "correct": [
+          0,
+          2,
+          3
+        ],
+        "explanation": "Согласно Закону РБ 'Об обеспечении единства измерений', эталоны единиц величин по своему статусу подразделяются на три категории: национальные, исходные и рабочие."
+      },
+      {
+        "text": "Свойство результата измерений, в соответствии с которым результат может быть связан со ссылкой через документированную неразрывную цепь калибровок, каждая из которых вносит вклад в неопределенность измерения - это:",
+        "options": [
+          "а) поверка;",
+          "б) метрологическая аттестация;",
+          "в) метрологическая прослеживаемость;",
+          "г) метрологическая оценка;",
+          "д) сличения."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Это точное определение понятия метрологической прослеживаемости."
+      }
+    ]
+  },
+  "3": {
+    "title": "Билет 3",
+    "description": "10 вопросов • Задачи НМИ, единство измерений, цели оценки, национальные эталоны и экспертиза.",
+    "questions": [
+      {
+        "text": "Задачи национальных метрологических институтов согласно рекомендациям Документа МОЗМ D1:",
+        "options": [
+          "а) установление, хранение, поддержание, постоянное совершенствование и распространение национальных эталонов;",
+          "б) организация Национальной системы аккредитации;",
+          "в) распространение допускаемых к применению официальных единиц в соответствии с потребностями страны;",
+          "г) создание прочной метрологической базы для национальной системы аккредитации;",
+          "д) организация Национальной системы подтверждения соответствия."
+        ],
+        "correct": [
+          0,
+          2,
+          3
+        ],
+        "explanation": "По OIML D1, задачи НМИ — эталоны, обеспечение распространения единиц в соответствии с потребностями страны и научная база для аккредитации. Саму аккредитацию проводит независимый орган."
+      },
+      {
+        "text": "Единство измерений (согласно Закону РБ 'Об обеспечении единства измерений') - это:",
+        "options": [
+          "а) состояние измерений, при котором их результаты выражены в единицах измерений системы СИ, и точность измерений находится в установленных границах с заданной вероятностью;",
+          "б) состояние измерений, при котором их результаты выражены в единицах измерений, допущенных к применению в Республике Беларусь, и точность измерений находится в установленных границах с заданной вероятностью;",
+          "в) состояние измерений, при котором их результаты выражены в единицах измерений, допущенных к применению в Республике Беларусь, и неопределенность измерений находится в установленных границах с заданной вероятностью;",
+          "г) состояние измерений, при котором их результаты выражены в единицах измерений системы СИ, и неопределенность измерений находится в установленных границах с заданной вероятностью;",
+          "д) состояние измерений, при котором их результаты выражены в единицах измерений системы СИ, и точность измерений находится в установленных границах."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "В РБ допускается применение не только системы СИ, но и других разрешенных единиц, поэтому верным является вариант (б)."
+      },
+      {
+        "text": "Метрологическая оценка осуществляется для:",
+        "options": [
+          "а) установления и (или) подтверждения метрологических и технических характеристик эталонов единиц величин, средств измерений и стандартных образцов;",
+          "б) определения соответствия средств измерений, стандартных образцов метрологическим требованиям;",
+          "в) определения соответствия методик (методов) измерений метрологическим требованиям, а также их назначению;",
+          "г) определения соответствия продукции метрологическим требованиям;",
+          "д) установления показателей качества продукции в соответствии с метрологическими требованиями."
+        ],
+        "correct": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Согласно закону РБ, оценка осуществляется для установления/подтверждения характеристик эталонов, СИ и СО, проверки соответствия СИ/СО метрологическим требованиям и методик (методов) измерений их требованиям и назначению."
+      },
+      {
+        "text": "Назначение национальных эталонов единиц величин:",
+        "options": [
+          "а) воспроизведение физических величин;",
+          "б) оценка качества измерений;",
+          "в) выражение узаконенных единиц величин;",
+          "г) воспроизведение единиц величин;",
+          "д) обеспечение прослеживаемости результатов измерений к единицам Международной системы единиц."
+        ],
+        "correct": [
+          3,
+          4
+        ],
+        "explanation": "Национальные эталоны РБ создаются строго для воспроизведения единиц величин (или шкал) и обеспечения их международной прослеживаемости к системе SI."
+      },
+      {
+        "text": "Что понимают под метрологической характеристикой средства измерений?",
+        "options": [
+          "а) характеристику свойства средства измерений, влияющую на применение средства измерений;",
+          "б) характеристику одного из свойств средства измерений, влияющую на результат измерений."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Это классическое определение: метрологическая характеристика — это характеристика одного из свойств СИ, влияющая на результат измерений."
+      },
+      {
+        "text": "Метрологическая оценка включает в себя следующие виды работ:",
+        "options": [
+          "а) калибровка;",
+          "б) метрологическая экспертиза;",
+          "в) метрологическая аттестация;",
+          "г) сличение результатов измерений;",
+          "д) метрологическое обеспечение."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "В соответствии со статьей 16 Закона РБ 'Об обеспечении единства измерений', метрологическая оценка включает в себя калибровку, экспертизу, аттестацию и сличение."
+      },
+      {
+        "text": "Дайте определение национального эталона:",
+        "options": [
+          "а) эталон, утвержденный решением Национального метрологического института...",
+          "б) эталон, утвержденный решением органов государственной метрологической службы...",
+          "в) эталон, утвержденный решением Совета Министров Республики Беларусь...",
+          "г) эталон, утвержденный решением региональной метрологической службы...",
+          "д) эталон, утвержденный решением Государственного комитета по стандартизации РБ в качестве национального эталона единицы величины."
+        ],
+        "correct": [
+          4
+        ],
+        "explanation": "Национальный эталон утверждается исключительно Государственным комитетом по стандартизации РБ в качестве национального эталона."
+      },
+      {
+        "text": "Что понимают под измерением согласно Закону РБ 'Об обеспечении единства измерений'?",
+        "options": [
+          "а) процесс получения значения физической величины;",
+          "б) совокупность операций для определения погрешности измерения;",
+          "в) совокупность операций, выполняемых для определения значения величины;",
+          "г) совокупность операций, выполняемых для определения значения величины с заданной погрешностью;",
+          "д) совокупность операций, выполняемых для определения значения величины с неопределенностью."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Это точное определение измерения согласно ст. 1 Закона РБ: совокупность операций, выполняемых для определения значения величины."
+      },
+      {
+        "text": "Метрологическая оценка включает в себя следующие виды работ (утверждение типов):",
+        "options": [
+          "а) утверждение типа средства измерений;",
+          "б) оценка соответствия;",
+          "в) утверждение типа стандартного образца;",
+          "г) поверка;",
+          "д) калибровка."
+        ],
+        "correct": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "explanation": "Работы по метрологической оценке включают утверждение типа СИ/СО, поверку и калибровку."
+      },
+      {
+        "text": "Перечислите законодательные положения, предлагаемые Документом МОЗМ D1 для регулирования метрологии:",
+        "options": [
+          "а) национальная политика в области метрологии;",
+          "б) национальные эталоны;",
+          "в) национальная система аккредитации;",
+          "г) национальная метрологическая инфраструктура;",
+          "д) национальная система подтверждения соответствия."
+        ],
+        "correct": [
+          0,
+          3
+        ],
+        "explanation": "Повторяющийся вопрос: OIML D1 предлагает в законе устанавливать национальную политику и национальную метрологическую инфраструктуру."
+      }
+    ]
+  },
+  "5": {
+    "title": "Билет 5",
+    "description": "10 вопросов • Задачи НМИ, метрологические службы, прослеживаемость, правила по СИ и правонарушения.",
+    "questions": [
+      {
+        "text": "Задачи национальных метрологических институтов согласно рекомендациям Документа МОЗМ D1:",
+        "options": [
+          "а) проведение испытаний типа;",
+          "б) участие в международной работе по законодательной метрологии;",
+          "в) участие в международной работе по подтверждению соответствия;",
+          "г) консультирование по техническим вопросам и оказание поддержки Правительству, промышленности, торговле и обществу по вопросам аккредитации;",
+          "д) консультирование по техническим вопросам и оказание поддержки Правительству, промышленности, торговле и обществу по вопросам законодательной метрологии."
+        ],
+        "correct": [
+          1,
+          4
+        ],
+        "explanation": "Согласно МОЗМ D1, ключевые задачи НМИ — участие в международной деятельности по законодательной метрологии и консультационная поддержка правительства, бизнеса и общества по вопросам законодательной метрологии."
+      },
+      {
+        "text": "Совокупность организационно и (или) функционально связанных между собой юридических лиц, их структурных подразделений либо структурное подразделение юридического лица, деятельность которых направлена на обеспечение единства измерений - это:",
+        "options": [
+          "а) метрологический надзор;",
+          "б) национальный метрологический институт;",
+          "в) госстандарт;",
+          "г) орган по аккредитации;",
+          "д) метрологическая служба."
+        ],
+        "correct": [
+          4
+        ],
+        "explanation": "Это официальное законодательное определение понятия 'Метрологическая служба' согласно Закону Республики Беларусь 'Об обеспечении единства измерений'."
+      },
+      {
+        "text": "Национальный эталон представляет собой комплекс технических средств, с помощью которых:",
+        "options": [
+          "а) воспроизводят единицу величины;",
+          "б) контролируют условия хранения и применения эталона;",
+          "в) обеспечивают неизменность размера воспроизводимой единицы величины;",
+          "г) осуществляют передачу размера единицы величины государствам, подписавшим соответствующее соглашение;",
+          "д) осуществляют передачу размера единицы величины рабочим эталонам и высокоточным средствам измерений."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "explanation": "Комплекс технических средств национального эталона РБ воспроизводит единицу, контролирует её условия хранения/применения, поддерживает стабильность и осуществляет передачу рабочим эталонам и СИ."
+      },
+      {
+        "text": "Метрологическая оценка включает в себя следующие виды работ:",
+        "options": [
+          "а) калибровка;",
+          "б) метрологическая экспертиза;",
+          "в) метрологическая аттестация;",
+          "г) сличение результатов измерений;",
+          "д) метрологическое обеспечение."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "По закону РБ в виды метрологической оценки входят калибровка, метрологическая экспертиза, метрологическая аттестация и сличение результатов измерений."
+      },
+      {
+        "text": "Система обеспечения единства измерений включает в себя:",
+        "options": [
+          "а) систему подготовки кадров;",
+          "б) принципы построения метрологической службы в стране;",
+          "в) систему физических величин;",
+          "г) систему государственного метрологического надзора;",
+          "д) принципы настройки и калибровки."
+        ],
+        "correct": [
+          0,
+          1,
+          3
+        ],
+        "explanation": "В состав Системы обеспечения единства измерений входят система госконтроля (надзора), метрологическая служба и система профессиональной подготовки кадров."
+      },
+      {
+        "text": "Прослеживаемость - это:",
+        "options": [
+          "а) процесс получения результата измерения;",
+          "б) свойство результата измерения, при котором данное значение может быть отнесено к определенным материалам."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Здесь приведено упрощенное определение: прослеживаемость — это свойство результата измерения, связывающее его с определенной эталонной ссылкой."
+      },
+      {
+        "text": "Какие утверждения верны для правил по средствам измерений?",
+        "options": [
+          "а) могут быть установлены органом власти для определения перечня видов, подлежащих законодательному контролю;",
+          "б) средства измерений, на которые распространяются эти правила, должны обеспечивать результаты в единицах измерений, допускаемых к применению;",
+          "в) средства измерений, на которые распространяются эти правила, должны обеспечивать результаты в единицах измерений, допускаемых к применению, при этом результаты должны быть прослеживаемы;",
+          "г) эти правила могут определять необходимые метрологические характеристики средств измерений указанных видов;",
+          "д) эти правила должны определять технические требования к средствам измерений."
+        ],
+        "correct": [
+          0,
+          2,
+          3
+        ],
+        "explanation": "Законодательные правила по СИ определяют контролируемые виды приборов, требуют использования узаконенных единиц с обеспечением прослеживаемости, и задают обязательные метрологические характеристики."
+      },
+      {
+        "text": "Сфера действия законодательной метрологии распространяется на измерения, выполняемые при:",
+        "options": [
+          "а) определении налоговой базы, проведении экспертиз;",
+          "б) проведении осмотра транспортных средств;",
+          "в) осуществлении геодезической и картографической деятельности;",
+          "г) регистрации спортивных рекордов;",
+          "д) обеспечении охраны труда, проведении лабораторных исследований."
+        ],
+        "correct": [
+          0,
+          2,
+          4
+        ],
+        "explanation": "Измерения при экспертизах и налогах, геодезии, а также охране труда входят в обязательную сферу законодательной метрологии РБ."
+      },
+      {
+        "text": "К правонарушениям в области законодательной метрологии относятся:",
+        "options": [
+          "а) выполнение обязательств согласно требованиям к физическим лицам, не выполняющим требования о доступности сертификатов о результатах выполненных измерений;",
+          "б) принятие и использование результатов испытаний или поверок, полученных в других странах;",
+          "в) невыполнение корректирующих действий, которые были предписаны официальными лицами сферы законодательной метрологии;",
+          "г) отсутствие регистрации изготовителей или импортеров фасованных товаров;",
+          "д) искажение результатов измерений, определенного количества товара, используемых для определения цены и сорта."
+        ],
+        "correct": [
+          2,
+          3,
+          4
+        ],
+        "explanation": "К правонарушениям в области метрологии по КоАП относятся невыполнение предписаний госорганов, уклонение от регистрации фасованных товаров и умышленное искажение данных измерений для изменения цены/сорта."
+      },
+      {
+        "text": "Классификация алгоритмов обработки данных по виду вычислительной процедуры:",
+        "options": [
+          "а) оптимальные;",
+          "б) априорные;",
+          "в) устойчивые;",
+          "г) эвристические;",
+          "д) оригинальные."
+        ],
+        "correct": [
+          0,
+          2,
+          3
+        ],
+        "explanation": "По вычислительной процедуре алгоритмы классифицируют на оптимальные (наилучшие с точки зрения статистики), устойчивые (робастные к помехам) и эвристические (основанные на практических правилах)."
+      }
+    ]
+  },
+  "6": {
+    "title": "Билет 6",
+    "description": "10 вопросов • Поддержка поверок, национальные эталоны, метрологическая инфраструктура, БелГИМ и классификации.",
+    "questions": [
+      {
+        "text": "Задачи национальных метрологических институтов согласно рекомендациям Документа МОЗМ D1:",
+        "options": [
+          "а) обеспечение технической координации и технической поддержки первичной и последующих поверок;",
+          "б) утверждение единиц величин;",
+          "в) обеспечение технической координации и технической поддержки контроля средств измерений;",
+          "г) обеспечение надзора за рынком;",
+          "д) принятие законов в области законодательной метрологии."
+        ],
+        "correct": [
+          0,
+          2
+        ],
+        "explanation": "По рекомендациям OIML D1, одной из задач НМИ является координация и научно-техническая поддержка проведения поверок и общей системы контроля СИ."
+      },
+      {
+        "text": "Эталон единицы величины, утвержденный решением Государственного комитета по стандартизации Республики Беларусь:",
+        "options": [
+          "а) международный эталон единицы величины;",
+          "б) национальный эталон единицы величины;",
+          "в) первичный эталон единицы величины;",
+          "г) вторичный эталон единицы величины;",
+          "д) региональный эталон единицы величины."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Именно национальный эталон единицы величины в РБ утверждается соответствующим решением Госстандарта."
+      },
+      {
+        "text": "Национальная метрологическая инфраструктура должна содержать:",
+        "options": [
+          "а) законодательную базу;",
+          "б) орган власти;",
+          "в) систему калибровочных лабораторий;",
+          "г) институты по связям с общественностью;",
+          "д) мастерские по ремонту СИ."
+        ],
+        "correct": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Согласно рекомендациям OIML D1, столпами инфраструктуры являются: законы (законодательная база), Госстандарт (регулирующий орган власти) и аккредитованные лаборатории (система калибровки/поверки)."
+      },
+      {
+        "text": "К области законодательной метрологии относятся:",
+        "options": [
+          "а) поверка и калибровка СИ;",
+          "б) метрологический контроль;",
+          "в) создание новых единиц измерений;",
+          "г) создание и совершенствование системы Госстандарта;",
+          "д) вопросы практического применения разработок теоретической метрологии."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Главным инструментом практической законодательной метрологии является метрологический контроль (утверждение типа, поверка и др.)."
+      },
+      {
+        "text": "Отметьте основные цели Системы обеспечения единства измерений:",
+        "options": [
+          "а) обеспечение единства измерений;",
+          "б) защита населения и государства от последствий неточных и неправильно выполненных измерений;",
+          "в) разработка научно-методических, правовых и организационных основ Системы;",
+          "г) осуществление государственного метрологического надзора и метрологического контроля за производством, состоянием, применением и ремонтом СИ;",
+          "д) повышение качества товаров и услуг."
+        ],
+        "correct": [
+          0,
+          1,
+          4
+        ],
+        "explanation": "Главные цели системы — обеспечение единства измерений в стране, защита граждан/государства от недостоверных данных, а также повышение качества товаров и услуг."
+      },
+      {
+        "text": "Какой государственный орган возглавляет государственную метрологическую службу и является основным координатором и организатором всех метрологических работ?",
+        "options": [
+          "а) Совет Министров;",
+          "б) Госстандарт РБ;",
+          "в) БелГИСС;",
+          "г) БелГИМ;",
+          "д) Государственная служба стандартных образцов."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Координацию и государственное управление в области обеспечения единства измерений возглавляет Государственный комитет по стандартизации Республики Беларусь (Госстандарт)."
+      },
+      {
+        "text": "Разновидность средства измерения одного типа, характеризующаяся по отношению к иным средствам измерений данного типа особенностями конструкции или функциональными возможностями, а также метрологическими характеристиками и область применения типа средств измерений - это:",
+        "options": [
+          "а) тип средства измерений;",
+          "б) единичный экземпляр средства измерений;",
+          "в) исполнение средства измерений;",
+          "г) модификация средства измерений;",
+          "д) партия средств измерений."
+        ],
+        "correct": [
+          3
+        ],
+        "explanation": "Это определение понятия 'модификация средства измерений' — разновидность типа СИ с изменением конструкции и метрологических характеристик."
+      },
+      {
+        "text": "Классификация программ по виду оцениваемой характеристики:",
+        "options": [
+          "а) зависимость входных и выходных величин;",
+          "б) конкретный смысл характеристики в рамках определенной математической модели;",
+          "в) размерность характеристики;",
+          "г) функциональный вид характеристики;",
+          "д) число факторов, определяющих вид характеристики."
+        ],
+        "correct": [
+          1,
+          3,
+          4
+        ],
+        "explanation": "Программы обработки измерительных данных делятся по виду оцениваемых характеристик на: имеющие конкретный смысл в математической модели, функциональный вид и по числу определяющих факторов."
+      },
+      {
+        "text": "Региональное законодательство согласно рекомендациям Документа МОЗМ D1 может быть:",
+        "options": [
+          "а) полного применения;",
+          "б) обязательного применения;",
+          "в) избирательного (факультативного) применения;",
+          "г) конкретного применения;",
+          "д) добровольного применения."
+        ],
+        "correct": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Региональные технические регламенты и правила согласно OIML D1 могут применяться в виде полного, обязательного или избирательного (факультативного) применения."
+      },
+      {
+        "text": "Перечислите признаки стандартного образца одного типа:",
+        "options": [
+          "а) назначение;",
+          "б) метод определения метрологических характеристик;",
+          "в) одинаковые метрологические характеристики;",
+          "г) технология изготовления;",
+          "д) техническая документация."
+        ],
+        "correct": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "explanation": "К признакам стандартных образцов одного типа относятся: одинаковое назначение, идентичные метрологические свойства, единая технология изготовления и общая техническая документация."
+      }
+    ]
+  },
+  "7": {
+    "title": "Билет 7",
+    "description": "10 вопросов • Специальные единицы, БелГИМ, государственный метрологический надзор и поверка.",
+    "questions": [
+      {
+        "text": "Для чего могут использоваться специальные единицы, не входящие в систему СИ, согласно рекомендациям Документа МОЗМ D1?",
+        "options": [
+          "а) для нужд национальной торговли;",
+          "б) для нужд международной торговли;",
+          "в) в области здравоохранения;",
+          "г) для регистрации почтовых отправлений;",
+          "д) по соображениям безопасности."
+        ],
+        "correct": [
+          1,
+          2,
+          4
+        ],
+        "explanation": "Внесистемные единицы допускаются МОЗМ D1 для международной торговли (например, морские узлы, караты), здравоохранения (диоптрии) и по соображениям безопасности (высота в авиации)."
+      },
+      {
+        "text": "Юридическое лицо, подчиненное Государственному комитету по стандартизации Республики Беларусь, на которое возложены проведение фундаментальных и прикладных научных исследований в области обеспечения единства измерений... это:",
+        "options": [
+          "а) центр аккредитации;",
+          "б) национальный метрологический институт;",
+          "в) государственная метрологическая служба;",
+          "г) метрологическая служба предприятия;",
+          "д) институты Национальной академии наук РБ."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Это официальное определение Национального метрологического института (в РБ эту роль выполняет РУП 'БелГИМ')."
+      },
+      {
+        "text": "Государственный метрологический надзор - это:",
+        "options": [
+          "а) деятельность, соблюдение законодательства об обеспечении единства измерений в сфере законодательной метрологии;",
+          "б) деятельность, направленная на предупреждение, выявление и пресечение нарушений законодательства об обеспечении единства измерений;",
+          "в) деятельность, направленная на соблюдение законодательства об обеспечении единства измерений;",
+          "г) деятельность, направленная на предупреждение, выявление и пресечение нарушений законодательства об обеспечении единства измерений в сфере законодательной метрологии."
+        ],
+        "correct": [
+          3
+        ],
+        "explanation": "Согласно Закону РБ 'Об обеспечении единства измерений', госнадзор направлен на предупреждение, выявление и пресечение нарушений требований законодательства именно в сфере законодательной метрологии."
+      },
+      {
+        "text": "Требования к оформлению результатов измерений определяются:",
+        "options": [
+          "а) международными документами в области обеспечения единства измерений;",
+          "б) постановлениями Госстандарта;",
+          "в) правовыми актами, в том числе обязательными для соблюдения техническими нормативными правовыми актами;",
+          "г) методиками (методами) измерений;",
+          "д) локальными правовыми актами юридических лиц и индивидуальных предпринимателей."
+        ],
+        "correct": [
+          1,
+          2,
+          3
+        ],
+        "explanation": "Оформление результатов регламентируется нормативно-правовыми актами РБ, постановлениями Госстандарта и конкретными методиками выполнения измерений."
+      },
+      {
+        "text": "В состав эталона входят (как правило):",
+        "options": [
+          "а) эталон;",
+          "б) дополнительные средства измерений, включая измерительное оборудование для контроля влияющих величин;",
+          "в) оборудование для сличений;",
+          "г) дополнительное оборудование, которое непосредственно или значительно влияет на точностные характеристики эталона;",
+          "д) дополнительное оборудование для обеспечения нормальных условий эксплуатации эталона."
+        ],
+        "correct": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "explanation": "В состав эталона, помимо непосредственно воспроизводящего прибора, входят вспомогательные СИ, климатическое оборудование контроля среды и оборудование, влияющее на точность."
+      },
+      {
+        "text": "Понятие «измерение физической величины» означает:",
+        "options": [
+          "а) сравнение данной величины с другой неоднородной величиной, принятой за единицу;",
+          "б) получение типового эквивалента величины, характеризующей свойство объекта;",
+          "в) нахождение значения физической величины опытным путем с помощью специальных технических средств;",
+          "г) операции сравнения аналоговой величины с образцовой;",
+          "д) эксперимент, основу которого составляет операция сравнения."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Измерение физической величины — это нахождение её значения опытным путем при помощи специальных технических средств."
+      },
+      {
+        "text": "Разновидность средств измерений одного типа, характеризующаяся по отношению к иным средствам измерений данного типа наличием конструктивных решений, не оказывающих влияния на метрологические характеристики...",
+        "options": [
+          "а) тип средства измерений;",
+          "б) единичный экземпляр средства измерений;",
+          "в) партия средств измерений одного типа;",
+          "г) модификация средства измерений;",
+          "д) исполнение средства измерений."
+        ],
+        "correct": [
+          4
+        ],
+        "explanation": "Если конструктивные решения не влияют на метрологические свойства СИ и область его применения, то это разновидность называется 'исполнением средства измерений'."
+      },
+      {
+        "text": "Виды программного обеспечения, используемого при обработке измерительной информации:",
+        "options": [
+          "а) готовое (коммерческое ПО);",
+          "б) индивидуальное ПО;",
+          "в) модифицированное коммерческое ПО;",
+          "г) оригинальное ПО;",
+          "д) пользовательское (заказное) ПО."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "explanation": "В метрологической практике при обработке измерительных данных применяются все пять типов ПО: готовое, заказное, индивидуальное, оригинальное и модифицированное."
+      },
+      {
+        "text": "Исходный эталон:",
+        "options": [
+          "а) эталон, обладающий установленными метрологическими свойствами..., передающий единицу величины или шкалу измерений подчиненным эталонам;",
+          "б) эталон единицы величины, утвержденный решением Государственного комитета...;",
+          "в) эталон, предназначенный для передачи размера единицы величины или шкалы измерений средствам измерений;",
+          "г) эталон, обладающий наивысшими метрологическими свойствами...;",
+          "д) эталон, предназначенный для передачи размера единицы величины или шкалы измерений средствам измерений и обладающий наивысшими метрологическими свойствами."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Исходный эталон — эталон, обладающий наивысшими метрологическими свойствами в конкретной организации, передающий размер подчиненным эталонам."
+      },
+      {
+        "text": "Поверка средства измерений:",
+        "options": [
+          "а) проведение работ по метрологической оценке, в ходе которых устанавливаются метрологические характеристики средства измерений в нормальных условиях;",
+          "б) проведение работ по метрологической оценке, в ходе которых устанавливаются обязательные метрологические требования к средству измерений;",
+          "в) проведение работ по метрологической оценке, в ходе которых подтверждается соответствие средства измерений обязательным метрологическим требованиям;",
+          "г) проведение работ по метрологической оценке, в ходе которых устанавливаются метрологические характеристики средства измерений в рабочих условиях;",
+          "д) проведение работ по метрологической оценке, в ходе которых проверяются метрологические характеристики средства измерений."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Согласно закону РБ, поверка — это подтверждение соответствия средства измерений обязательным метрологическим требованиям."
+      }
+    ]
+  },
+  "8": {
+    "title": "Билет 8",
+    "description": "10 вопросов • Фасованные товары, функции НМИ, единство измерений и полномочия Совмина.",
+    "questions": [
+      {
+        "text": "Правила по измерениям, фасованным товарам в упаковках и средствам измерений могут быть разработаны, согласно рекомендациям Документа МОЗМ D1, в целях:",
+        "options": [
+          "а) защиты интересов физических лиц и предприятий;",
+          "б) защиты национальных интересов;",
+          "в) защиты здравоохранения и общественной безопасности;",
+          "г) выполнения Постановлений Госстандарта в области обеспечения единства измерений;",
+          "д) достижения совместимости с требованиями международной торговли."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "explanation": "Правила МОЗМ D1 составляются для защиты интересов граждан/предприятий, охраны здоровья/безопасности, нацинтересов и гармонизации с международной торговлей."
+      },
+      {
+        "text": "Поверка средства измерений - это:",
+        "options": [
+          "а) проведение работ по метрологической оценке, в ходе которых устанавливаются метрологические характеристики средства измерений в нормальных условиях;",
+          "б) проведение работ по метрологической оценке, в ходе которых устанавливаются обязательные метрологические требования к средству измерений;",
+          "в) проведение работ по метрологической оценке, в ходе которых подтверждается соответствие средства измерений обязательным метрологическим требованиям;",
+          "г) проведение работ по метрологической оценке, в ходе которых устанавливаются метрологические характеристики средства измерений в рабочих условиях;",
+          "д) проведение работ по метрологической оценке, в ходе которых проверяются метрологические характеристики средства измерений."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Повторяющийся базовый вопрос: поверка есть подтверждение соответствия СИ обязательным требованиям."
+      },
+      {
+        "text": "Функции национального метрологического института согласно рекомендациям Документа МОЗМ D1:",
+        "options": [
+          "а) проведение работ по признанию национальных эталонов единиц величин иностранными государствами;",
+          "б) издание руководящих указаний в области законодательной метрологии;",
+          "в) содержание средств измерений;",
+          "г) разработка и издание рекомендаций в области метрологии;",
+          "д) координация и научно-методическое обеспечение сличения результатов измерений."
+        ],
+        "correct": [
+          0,
+          3,
+          4
+        ],
+        "explanation": "Функции НМИ включают работу по взаимному признанию эталонов, разработку научных рекомендаций и научно-методическое обеспечение сличений."
+      },
+      {
+        "text": "Исходный эталон - это:",
+        "options": [
+          "а) эталон, обладающий установленными метрологическими свойствами..., передающий единицу величины или шкалу измерений подчиненным эталонам;",
+          "б) эталон единицы величины, утвержденный решением Государственного комитета...;",
+          "в) эталон, предназначенный для передачи размера единицы величины или шкалы измерений средствам измерений;",
+          "г) эталон, обладающий наивысшими метрологическими свойствами...;",
+          "д) эталон, предназначенный для передачи размера единицы величины или шкалы измерений средствам измерений и обладающий наивысшими метрологическими свойствами."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Повторяющийся вопрос: это эталон с установленными метрологическими свойствами, передающий единицу подчиненным эталонам."
+      },
+      {
+        "text": "Единство измерений – это такое состояние измерений, при котором:",
+        "options": [
+          "а) результаты измерений достоверны;",
+          "б) результаты измерений, полученные в разных местах, совпадают;",
+          "в) их результаты выражены в единицах измерений, узаконенных в РБ и точность измерений находится в установленных границах с заданной вероятностью;",
+          "г) их результаты выражены в одинаковых единицах измерений и определены погрешности;",
+          "д) их результаты имеют одинаковые погрешности."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Повторяющийся базовый вопрос: единство измерений в РБ — это когда результаты выражены в узаконенных единицах, а их точность находится в установленных границах."
+      },
+      {
+        "text": "Единицы измерений, допущенные к применению, могут включать специальные единицы особого применения, необходимые для:",
+        "options": [
+          "а) исторических справок;",
+          "б) по соображениям безопасности;",
+          "в) распространения допускаемых к применению официальных единиц;",
+          "г) нужд международной торговли;",
+          "д) защиты национальных интересов."
+        ],
+        "correct": [
+          1,
+          3,
+          4
+        ],
+        "explanation": "Специальные единицы вне СИ вводятся органом власти для международной торговли, безопасности и защиты национальных интересов."
+      },
+      {
+        "text": "Совет Министров РБ в области обеспечения единства измерений обеспечивает:",
+        "options": [
+          "а) проведение единой государственной политики;",
+          "б) установление наименований, обозначений, соотношений, правил написания и применения единиц измерений, допущенных к применению в РБ;",
+          "в) обучение персонала;",
+          "г) международное сотрудничество в области обеспечения единства измерений;",
+          "д) приоритетное применение единиц измерений международной системы единиц."
+        ],
+        "correct": [
+          0,
+          3
+        ],
+        "explanation": "Согласно ст. 6 Закона РБ, Совет Министров РБ обеспечивает проведение единой госполитики и руководит международным сотрудничеством в этой области."
+      },
+      {
+        "text": "Требования к программному обеспечению средств измерений на основе Директивы по измерительным приборам (MID):",
+        "options": [
+          "а) возможность оценки соответствия законодательно контролируемых функций ПО;",
+          "б) невозможность влияния на ПО средства измерений другого ПО;",
+          "в) невозможность оказания влияния на ПО средства измерений через интерфейс прибора;",
+          "г) возможность влияния на ПО средства измерений другого ПО;",
+          "д) возможность оказания влияния на ПО средства измерений через интерфейс прибора."
+        ],
+        "correct": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "По стандартам WELMEC и MID, ПО должно быть проверяемым, не должно подвергаться влиянию посторонних программ и интерфейсов прибора."
+      },
+      {
+        "text": "Юридическое лицо, подчиненное Государственному комитету по стандартизации Республики Беларусь, на которое возложены проведение фундаментальных и прикладных научных исследований в области обеспечения единства измерений... это:",
+        "options": [
+          "а) центр аккредитации;",
+          "б) национальный метрологический институт;",
+          "в) государственная метрологическая служба;",
+          "г) метрологическая служба предприятия;",
+          "д) институты Национальной академии наук РБ."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Повторяющийся вопрос: это Государственный НМИ (РУП 'БелГИМ')."
+      },
+      {
+        "text": "Назначение исходных эталонов РБ:",
+        "options": [
+          "а) хранение размеров единиц величин;",
+          "б) передача размеров единиц величин рабочим эталонам и средствам измерений;",
+          "в) обеспечение прослеживаемости результатов измерений к единицам Международной системы единиц;",
+          "г) поверка средств измерений;",
+          "д) калибровка средств измерений."
+        ],
+        "correct": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Исходные эталоны служат для хранения, передачи размеров и обеспечения международной прослеживаемости к системе SI."
+      }
+    ]
+  },
+  "9": {
+    "title": "Билет 9",
+    "description": "10 вопросов • Региональные законы, полномочия Госстандарта, законодательная база и ПО.",
+    "questions": [
+      {
+        "text": "Региональное законодательство согласно рекомендациям Документа МОЗМ D1 может быть:",
+        "options": [
+          "а) полного применения;",
+          "б) обязательного применения;",
+          "в) избирательного (факультативного) применения;",
+          "г) конкретного применения;",
+          "д) добровольного применения."
+        ],
+        "correct": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "OIML D1 рекомендует разделять региональные нормы на полное, обязательное и избирательное (факультативное) применение."
+      },
+      {
+        "text": "Совокупность работ, проводимых в целях обеспечения единства измерений (в соответствии с положениями Закона РБ 'Об обеспечении единства измерений') - это:",
+        "options": [
+          "а) метрологическая аттестация;",
+          "б) метрологическое обеспечение;",
+          "в) калибровка;",
+          "г) метрологическая оценка;",
+          "д) сличения."
+        ],
+        "correct": [
+          3
+        ],
+        "explanation": "В Законе Республики Беларусь 'Об обеспечении единства измерений' это понятие официально закреплено как 'метрологическая оценка'."
+      },
+      {
+        "text": "Полномочия Госстандарта РБ:",
+        "options": [
+          "а) определяет из числа юридических лиц, подчинённых ему, юридическое лицо, выступающее в качестве национального метрологического института;",
+          "б) определяет из числа юридических лиц, подчинённых ему, юридическое лицо, выступающее в качестве предприятия, производящего поверку средств измерений;",
+          "в) определяет из числа юридических лиц, подчинённых ему, юридическое лицо, выступающее в качестве органа по аккредитации юридических лиц и индивидуальных предпринимателей;",
+          "г) определяет из числа юридических лиц, подчинённых ему, юридическое лицо, выступающее в качестве предприятия по калибровке средств измерений;",
+          "д) определяет из числа юридических лиц, подчинённых ему, юридическое лицо, выступающее в качестве предприятия по испытаниям средств измерений."
+        ],
+        "correct": [
+          0,
+          2,
+          4
+        ],
+        "explanation": "Согласно ст. 7 Закона РБ, Госстандарт определяет Национальный метрологический институт (БелГИМ), Орган по аккредитации (БГЦА) и лаборатории для проведения испытаний СИ."
+      },
+      {
+        "text": "Назначение исходных эталонов РБ:",
+        "options": [
+          "а) хранение размеров единиц величин;",
+          "б) передача размеров единиц величин рабочим эталонам и средствам измерений;",
+          "в) обеспечение прослеживаемости результатов измерений к единицам Международной системы единиц;",
+          "г) поверка средств измерений;",
+          "д) калибровка средств измерений."
+        ],
+        "correct": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Повторяющийся вопрос: это хранение, передача размера и обеспечение прослеживаемости к системе SI."
+      },
+      {
+        "text": "Результат измерения - это:",
+        "options": [
+          "а) воспроизведение исследуемого явления в определенных условиях проведения эксперимента при возможной регистрации его результата;",
+          "б) совокупность величин, связанных между собой зависимостью;",
+          "в) число, показывающее отношение значения величины к единице измерения;",
+          "г) зафиксированное по показывающему устройству значение величины средства измерений в заданный момент времени;",
+          "д) предписание о порядке выполнения операций."
+        ],
+        "correct": [
+          3
+        ],
+        "explanation": "В техническом и прикладном смысле результат измерения трактуется как зафиксированное по показывающему прибору значение физической величины."
+      },
+      {
+        "text": "Законодательная метрология - это:",
+        "options": [
+          "а) раздел метрологии, относящийся к деятельности, направленной на обеспечение единства и необходимой точности измерений, требующий регламентации со стороны государства;",
+          "б) раздел метрологии, обеспечивающий выражение показаний СИ в узаконенных единицах и погрешностей измерений с заданной вероятностью."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Повторяющийся вопрос: это раздел метрологии, требующий жесткой государственной регламентации."
+      },
+      {
+        "text": "Законодательной основой Системы обеспечения единства измерений является:",
+        "options": [
+          "а) теория измерений;",
+          "б) фундаментальные исследования;",
+          "в) подсистема воспроизведения единиц;",
+          "г) методы и принципы измерений;",
+          "д) Закон РБ «Об обеспечении единства измерений»."
+        ],
+        "correct": [
+          4
+        ],
+        "explanation": "Главной законодательной и правовой основой системы является Закон Республики Беларусь 'Об обеспечении единства измерений'."
+      },
+      {
+        "text": "Единичный экземпляр средств измерений - это:",
+        "options": [
+          "а) средство измерений одного типа с одним заводским номером или иной уникальной для него идентификацией;",
+          "б) средство измерений одного типа с одной технической характеристикой;",
+          "в) средство измерений, изготовленное в единственном экземпляре;",
+          "г) эталонный прибор предприятия;",
+          "д) любой прибор в лаборатории."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Это официальное легальное определение единичного экземпляра СИ — конкретный прибор с уникальной заводской идентификацией."
+      },
+      {
+        "text": "Перечислите признаки средств измерений одного типа:",
+        "options": [
+          "а) назначение;",
+          "б) конструктивное решение;",
+          "в) принцип действия;",
+          "г) одинаковые метрологические характеристики;",
+          "д) техническая документация."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "explanation": "К признакам СИ одного типа относятся: одинаковое назначение, конструктивное решение, принцип действия, общие МХ и единая техническая документация."
+      },
+      {
+        "text": "Характеристики сложности программ обработки данных:",
+        "options": [
+          "а) временная сложность;",
+          "б) объемная сложность;",
+          "в) сложность аппроксимации данных;",
+          "г) сложность управления данными;",
+          "д) сложность вычислений."
+        ],
+        "correct": [
+          0,
+          1
+        ],
+        "explanation": "Основными характеристиками вычислительной сложности ПО являются временная сложность (число операций) и объемная сложность (объем оперативной памяти)."
+      }
+    ]
+  },
+  "10": {
+    "title": "Билет 10",
+    "description": "10 вопросов • Утверждения Госстандарта, специальные единицы, госнадзор и вычислительная сложность ПО.",
+    "questions": [
+      {
+        "text": "Госстандарт РБ утверждает:",
+        "options": [
+          "а) положение об уполномочивании юридических лиц, входящих в государственную метрологическую службу, на проведение испытаний в целях утверждения типа средства измерений;",
+          "б) требования к компетентности государственных поверителей;",
+          "в) порядок подтверждения компетентности государственных поверителей;",
+          "г) положение об уполномочивании юридических лиц, входящих в государственную метрологическую службу, на проведение испытаний в целях утверждения типа стандартного образца;",
+          "д) положение об уполномочивании юридических лиц, входящих в государственную метрологическую службу, на осуществление государственной поверки средств измерений."
+        ],
+        "correct": [
+          0,
+          3,
+          4
+        ],
+        "explanation": "Госстандарт РБ наделен полномочиями утверждать положения об уполномочивании органов на проведение испытаний для утверждения типа СИ/СО и проведение государственной поверки."
+      },
+      {
+        "text": "Для чего могут использоваться специальные единицы, не входящие в систему СИ, согласно рекомендациям Документа МОЗМ D1:",
+        "options": [
+          "а) для нужд международной торговли;",
+          "б) для калибровки средств измерений;",
+          "в) для поверки средств измерений;",
+          "г) в воздушной или морской навигации;",
+          "д) по соображениям безопасности."
+        ],
+        "correct": [
+          0,
+          3,
+          4
+        ],
+        "explanation": "Внесистемные единицы МОЗМ D1 допускает использовать для нужд международной торговли (например, футы, узлы), в воздушной или морской навигации и по соображениям безопасности."
+      },
+      {
+        "text": "Проведение работ по метрологической оценке, в ходе которых подтверждается соответствие средства измерений обязательным метрологическим требованиям - это:",
+        "options": [
+          "а) калибровки средства измерений;",
+          "б) испытания средств измерений;",
+          "в) сличения результатов измерений;",
+          "г) сличения эталонов;",
+          "д) поверка средства измерений."
+        ],
+        "correct": [
+          4
+        ],
+        "explanation": "Повторяющийся базовый вопрос: подтверждение соответствия СИ обязательным требованиям — это государственная поверка."
+      },
+      {
+        "text": "Государственный метрологический надзор осуществляется в порядке, установленном законодательными актами, и включает в себя надзор за:",
+        "options": [
+          "а) правилами ведения технической документации;",
+          "б) применением единиц величин, допущенных к применению в РБ, в сфере законодательной метрологии;",
+          "в) наличием, состоянием и применением средств измерений, а также за соблюдением обязательных метрологических требований в сфере законодательной метрологии;",
+          "г) за соблюдением методик (методов) измерений в сфере законодательной метрологии;",
+          "д) за деятельностью по фасованию товаров."
+        ],
+        "correct": [
+          1,
+          2,
+          3
+        ],
+        "explanation": "Госнадзор включает в себя контроль за применением допущенных единиц, состоянием/применением СИ и соблюдением методик измерений строго в сфере законодательной метрологии."
+      },
+      {
+        "text": "В состав исходного эталона РБ следует включать средства измерений, при помощи которых:",
+        "options": [
+          "а) хранят единицу величины;",
+          "б) определяют наименование единицы величины;",
+          "в) определяют дольные и кратные значения величины;",
+          "г) передают размер единицы величины;",
+          "д) контролируют неизменность хранимой единицы величины."
+        ],
+        "correct": [
+          0,
+          3,
+          4
+        ],
+        "explanation": "В комплект исходного эталона входят приборы, которые хранят единицу, передают её размер и контролируют её неизменность."
+      },
+      {
+        "text": "Законодательная метрология - это:",
+        "options": [
+          "а) раздел метрологии, относящийся к деятельности, направленной на обеспечение единства и необходимой точности измерений, требующий регламентации со стороны государства."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Повторяющийся вопрос: это раздел метрологии, подлежащий обязательной государственной регламентации."
+      },
+      {
+        "text": "Чем определяется объемная сложность программы обработки данных?",
+        "options": [
+          "а) временем работы ЭВМ при многократном выполнении программы;",
+          "б) объемом долговременной памяти ЭВМ, необходимой для работы программы;",
+          "в) временем работы ЭВМ при измерении величины;",
+          "г) временем работы ЭВМ при однократном выполнении программы;",
+          "д) объемом оперативной памяти ЭВМ, необходимой для работы программы."
+        ],
+        "correct": [
+          4
+        ],
+        "explanation": "Объемная сложность алгоритма или программы — это объем оперативной памяти ЭВМ, требуемый для выполнения алгоритма."
+      },
+      {
+        "text": "Перечислите признаки стандартного образца одного типа:",
+        "options": [
+          "а) назначение;",
+          "б) метод определения метрологических характеристик;",
+          "в) одинаковые метрологические характеристики;",
+          "г) технология изготовления;",
+          "д) техническая документация."
+        ],
+        "correct": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "explanation": "Повторяющийся вопрос: одинаковое назначение, метрологические свойства, технология и документация."
+      },
+      {
+        "text": "Чем определяется временная сложность программы обработки данных?",
+        "options": [
+          "а) временем работы ЭВМ при измерении величины;",
+          "б) временем работы ЭВМ при многократном выполнении программы;",
+          "в) временем работы ЭВМ при однократном выполнении программы;",
+          "г) объемом долговременной памяти ЭВМ;",
+          "д) объемом оперативной памяти ЭВМ."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Временная сложность алгоритма определяется как время работы ЭВМ (или количество элементарных операций), необходимое для однократного выполнения программы."
+      },
+      {
+        "text": "Национальная метрологическая инфраструктура должна содержать:",
+        "options": [
+          "а) законодательную базу;",
+          "б) орган власти;",
+          "в) систему калибровочных лабораторий;",
+          "г) институты по связям с общественностью;",
+          "д) мастерские по ремонту СИ."
+        ],
+        "correct": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Повторяющийся вопрос: инфраструктура базируется на законах, государственном органе и сети поверочных/калибровочных лабораторий."
+      }
+    ]
+  },
+  "11": {
+    "title": "Билет 11",
+    "description": "5 вопросов • Утверждение типа, полномочия Совмина, правила измерений и допущенные единицы.",
+    "questions": [
+      {
+        "text": "Проведение работ по метрологической оценке, в ходе которых принимается решение об утверждении типа средства измерений и о разрешении к применению средства измерений утвержденного типа на территории Республики Беларусь - это:",
+        "options": [
+          "а) сличения результатов измерений;",
+          "б) испытания средств измерений;",
+          "в) утверждение типа средства измерений;",
+          "г) сличения эталонов единиц величин;",
+          "д) поверка средства измерений."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Согласно Закону РБ, государственное решение об официальном допуске СИ к применению называется 'утверждением типа средства измерений'."
+      },
+      {
+        "text": "Полномочия Совета Министров Республики Беларусь в области обеспечения единства измерений:",
+        "options": [
+          "а) проведение единой государственной политики;",
+          "б) принятие решения о допуске единиц величин к применению в Республике Беларусь;",
+          "в) утверждение типа средства измерений;",
+          "г) принятие решения о допуске средства измерений к применению;",
+          "д) подготовка к сличениям результатов измерений."
+        ],
+        "correct": [
+          0,
+          1
+        ],
+        "explanation": "Совет Министров РБ обеспечивает госполитику и единолично принимает решения о допуске новых единиц величин к официальному применению в стране."
+      },
+      {
+        "text": "Измерения в сфере законодательной метрологии должны выполняться:",
+        "options": [
+          "а) с использованием эталонов единиц величин, прошедших сличение эталонов единиц величины;",
+          "б) с использованием средств измерений, прошедших государственную поверку или калибровку;",
+          "в) с использованием эталонов единиц величин, прошедших государственную поверку или калибровку;",
+          "г) с использованием стандартных образцов утвержденного типа;",
+          "д) по методикам (методам) измерений, прошедшим аттестацию методик (методов) измерений."
+        ],
+        "correct": [
+          1,
+          3,
+          4
+        ],
+        "explanation": "Согласно ст. 16 Закона РБ, приборы в сфере законодательного контроля должны пройти поверку/калибровку, стандартные образцы должны быть утвержденного типа, а методики — пройти обязательную аттестацию."
+      },
+      {
+        "text": "Функции органов Государственного метрологического надзора:",
+        "options": [
+          "а) контроль деятельности юридических лиц и индивидуальных предпринимателей по производству, реализации, передаче в аренду средств измерений и стандартных образцов;",
+          "б) контроль за проведением сличений эталонов средств измерений;",
+          "в) принятие решения о допуске единиц величин к применению в Республике Беларусь;",
+          "г) контроль за проведением работ по оценке компетентности юридических лиц и индивидуальных предпринимателей, проводящих работы по метрологической оценке;",
+          "д) утверждение типа средства измерений."
+        ],
+        "correct": [
+          0,
+          3
+        ],
+        "explanation": "Инспекторы госнадзора контролируют законность оборота (производство, аренду, продажу) СИ/СО и соблюдение правил оценки компетентности. Утверждение типов и единиц выполняют Госстандарт и Совмин."
+      },
+      {
+        "text": "Какие единицы официально допускаются к применению в Республике Беларусь?",
+        "options": [
+          "а) единицы Международной системы единиц СИ;",
+          "б) единицы, рекомендованные МОЗМ;",
+          "в) общепринятые единицы, установленные органом власти;",
+          "г) единицы, применяемые для величин, не охватываемых системой СИ;",
+          "д) единицы, применяемые для величин, не охватываемых системой СИ, которые определены органом власти и, насколько это возможно, основанные на международных стандартах."
+        ],
+        "correct": [
+          0,
+          4
+        ],
+        "explanation": "Официально допускаются система СИ, а также специальные единицы вне СИ, утвержденные правительством и основанные на международных стандартах."
+      }
+    ]
+  },
+  "12": {
+    "title": "Билет 12",
+    "description": "5 вопросов • Тип средств измерений, рабочий эталон, цели правил метрологии и допуск сторонних единиц.",
+    "questions": [
+      {
+        "text": "Совокупность средств измерений одного и того же назначения, основанных на одном и том же принципе действия, имеющих одинаковую конструкцию и изготовленных по одной и той же технической документации - это:",
+        "options": [
+          "а) национальный эталон;",
+          "б) исходный эталон;",
+          "в) стандартный образец;",
+          "г) тип средства измерений;",
+          "д) рабочий эталон."
+        ],
+        "correct": [
+          3
+        ],
+        "explanation": "Это официальное законодательное определение понятия 'тип средства измерений'."
+      },
+      {
+        "text": "Полномочия Совета Министров Республики Беларусь в области обеспечения единства измерений:",
+        "options": [
+          "а) устанавливает наименования, обозначения, соотношения, правила написания и применения единиц величин, допущенных к применению в Республике Беларусь;",
+          "б) устанавливает наименования, обозначения, соотношения, правила написания и применения кратных и дольных значений единиц величин;",
+          "в) принимает решение о допуске единиц величин к применению в Республике Беларусь;",
+          "г) принимает решение о допуске средства измерений к применению;",
+          "д) проводит подготовку к сличениям результатов измерений."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Правительство (Совмин) РБ наделено полномочиями принимать решения о допуске единиц величин к официальному применению."
+      },
+      {
+        "text": "Эталон, предназначенный для передачи размера единицы величины или шкалы измерений средствам измерений - это:",
+        "options": [
+          "а) исходный эталон;",
+          "б) первичный эталон;",
+          "в) международный эталон;",
+          "г) вторичный эталон;",
+          "д) рабочий эталон."
+        ],
+        "correct": [
+          4
+        ],
+        "explanation": "Рабочий эталон создается и применяется именно для передачи размера единицы величины от эталонов более высокого уровня обычным средствам измерений."
+      },
+      {
+        "text": "В каких целях разрабатываются правила законодательной метрологии?",
+        "options": [
+          "а) защита интересов физических лиц и предприятий;",
+          "б) защита здравоохранения и общественной безопасности, включая охрану окружающей среды и медицинское обслуживание;",
+          "в) достижение совместимости с требованиями международной торговли;",
+          "г) защита национальных интересов;",
+          "д) защита права на индивидуальность человека."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Правила законодательной метрологии разрабатываются с четырьмя целями: защита граждан/бизнеса, охрана здоровья/экологии, содействие торговле и нацбезопасность."
+      },
+      {
+        "text": "В каких случаях можно применять единицы измерения, отличные от официально допустимых?",
+        "options": [
+          "а) в документации и ссылках на продукцию и услуги, которые были изготовлены или оказаны до принятия обязательных требований по применению;",
+          "б) в документах и публикациях, предназначенных для пользователей в странах, имеющих отличные от системы СИ единицы;",
+          "в) в торговле;",
+          "г) в рекламе;",
+          "д) в случае упоминания о не допущенных к применению единицах, содержащихся в исторических изложениях, публикациях и при обучении."
+        ],
+        "correct": [
+          0,
+          1,
+          4
+        ],
+        "explanation": "Сторонние единицы допускаются только в архивных/исторических материалах, при экспорте в страны с другой системой единиц, либо для ранее выпущенного оборудования."
+      }
+    ]
+  },
+  "13": {
+    "title": "Билет 13",
+    "description": "10 вопросов • Госстандарт, метрологическая экспертиза, этапы разработки эталонов и сличительные работы.",
+    "questions": [
+      {
+        "text": "Полномочия Госстандарта в области обеспечения единства измерений:",
+        "options": [
+          "а) проведение единой государственной политики;",
+          "б) координация деятельности, связанной с созданием и функционированием Системы обеспечения единства измерений Республики Беларусь;",
+          "в) утверждение единиц измерений, допущенных к применению в Республике Беларусь;",
+          "г) внесение в Совет Министров Республики Беларусь предложений о допуске единиц величин к применению в Республики Беларусь;",
+          "д) установление требований к национальным эталонам единиц величин."
+        ],
+        "correct": [
+          1,
+          3,
+          4
+        ],
+        "explanation": "Госстандарт РБ координирует работу Системы, вносит в Совмин предложения по единицам измерений и жестко устанавливает обязательные требования к национальным эталонам."
+      },
+      {
+        "text": "Проведение работ по метрологической оценке, в ходе которых проводится анализ и оценка правильности и полноты применения метрологических требований, связанных с обеспечением единства измерений - это:",
+        "options": [
+          "а) сличение эталонов единиц величин;",
+          "б) метрологическая экспертиза;",
+          "в) поверка средств измерений;",
+          "г) калибровка средств измерений;",
+          "д) испытания средств измерений."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Согласно ст. 1 Закона РБ, проведение анализа и оценки правильности/полноты метрологических требований — это метрологическая экспертиза."
+      },
+      {
+        "text": "Разработка эталонов включает следующие этапы:",
+        "options": [
+          "а) составление календарного плана;",
+          "б) планирование;",
+          "в) изготовление;",
+          "г) исследование;",
+          "д) подготовка комплекта документов и предоставление их на утверждение."
+        ],
+        "correct": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "explanation": "Разработка государственного эталона включает в себя четыре этапа: планирование, изготовление, научное исследование характеристик и утверждение."
+      },
+      {
+        "text": "Единица величины - это:",
+        "options": [
+          "а) величина, равная единице, которая применяется для количественного выражения однородных с ней величин;",
+          "б) величина фиксированного размера, которой условно присвоено числовое значение, равное единице."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Легальное определение: единица величины — физическая величина фиксированного размера, которой условно присвоено числовое значение, равное 1."
+      },
+      {
+        "text": "Метрологические характеристики эталона, к которым устанавливаются обязательные требования:",
+        "options": [
+          "а) расширенная неопределенность измерения или характеристики погрешности при воспроизведении и передаче размера единицы величины;",
+          "б) стабильность;",
+          "в) линейность;",
+          "г) диапазон измерений;",
+          "д) конструкция."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "К обязательным метрологическим требованиям к эталонам в РБ относится неопределенность или характеристики погрешности воспроизведения."
+      },
+      {
+        "text": "Основные принципы обеспечения единства измерений:",
+        "options": [
+          "а) открытость и доступность информации в области обеспечения единства измерений, за исключением информации, отнесенной к ограниченному доступу;",
+          "б) применение национальных эталонов единиц величин;",
+          "в) воспроизводимость и сходимость результатов измерений;",
+          "г) приоритетное применение единиц измерений международной системы единиц;",
+          "д) прослеживаемость результатов измерений до единиц измерений Международной системы единиц, воспроизводимых эталонами."
+        ],
+        "correct": [
+          0,
+          3,
+          4
+        ],
+        "explanation": "К базовым принципам Закона РБ относятся гласность и доступность информации, приоритет применения системы СИ и обязательность международной прослеживаемости результатов."
+      },
+      {
+        "text": "Сфера законодательной метрологии распространяется на измерения, выполняемые при:",
+        "options": [
+          "а) проведении экспертиз;",
+          "б) регистрации спортивных рекордов;",
+          "в) обеспечении охраны окружающей среды;",
+          "г) осуществлении метрологического контроля;",
+          "д) проведении лабораторных исследований."
+        ],
+        "correct": [
+          0,
+          2
+        ],
+        "explanation": "По закону РБ в сферу входят экспертизы и охрана окружающей среды. Спортивные рекорды и внутренний контроль предприятий не входят."
+      },
+      {
+        "text": "Установление соотношения между результатами измерений при воспроизведении и передаче единицы величины эталонами единиц величин одного уровня точности измерений - это:",
+        "options": [
+          "а) сличение результатов измерений;",
+          "б) сличение эталонов единиц величин;",
+          "в) сличение метрологических характеристик средств измерений;",
+          "г) калибровка;",
+          "д) метрологическая оценка."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Сравнение эталонов одинакового уровня точности официально называется 'сличением эталонов единиц величин'."
+      },
+      {
+        "text": "Проведение работ по метрологической оценке, в ходе которых устанавливается соотношение между величинами, полученными с использованием средства измерений или эталона единицы величины, и значением величины, воспроизводимой и (или) хранимой национальным эталоном единицы величины, эталоном единицы величины того же рода или стандартным образцом, в целях определения действительных метрологических характеристик средства измерений - это:",
+        "options": [
+          "а) поверка средства измерений;",
+          "б) метрологическая аттестация средства измерений;",
+          "в) метрологическая оценка средства измерений;",
+          "г) сличения результатов измерений;",
+          "д) калибровка средства измерений."
+        ],
+        "correct": [
+          4
+        ],
+        "explanation": "Установление соотношения с эталоном с целью определения ДЕЙСТВИТЕЛЬНЫХ метрологических характеристик (без вынесения вердикта о годности) — это калибровка СИ."
+      },
+      {
+        "text": "Показатели вычислительной сложности, определяемые числом типовых операций (арифметических и логических), необходимых для однократного вычисления по данному алгоритму - это:",
+        "options": [
+          "а) характеристики устойчивости алгоритма;",
+          "б) характеристики сложности алгоритма;",
+          "в) характеристики оригинальности алгоритма;",
+          "г) характеристики распространенности алгоритма;",
+          "д) характеристики объема алгоритма."
+        ],
+        "correct": [
+          1
+        ],
+        "explanation": "Число арифметических/логических операций для работы программы характеризует её временную вычислительную сложность."
+      }
+    ]
+  },
+  "15": {
+    "title": "Билет 15",
+    "description": "9 вопросов • Надежность алгоритмов, сличения результатов, местные органы и экспертиза.",
+    "questions": [
+      {
+        "text": "Характеристики устойчивости (надежности), которые задают область работоспособности алгоритма (программы):",
+        "options": [
+          "а) допустимое число или доля данных, которые могли бы содержать промахи, не нарушая работоспособности алгоритма;",
+          "б) выборочное стандартное отклонение методической составляющей трансформированной погрешности;",
+          "в) границы систематических составляющих трансформированной погрешности результата измерения;",
+          "г) выборочное стандартное отклонение случайной составляющей трансформированной погрешности;",
+          "д) границы интервалов (областей) значений параметров исходных данных, в которых алгоритм работает без сбоев (грубых ошибок)."
+        ],
+        "correct": [
+          0,
+          4
+        ],
+        "explanation": "Область устойчивости алгоритма определяется допустимой долей грубых ошибок (промахов) во входных данных и границами параметров, в которых программа не дает сбоев."
+      },
+      {
+        "text": "Проведение работ по метрологической оценке, в ходе которых оцениваются результаты измерений одного и того же или нескольких подобных объектов измерений, выполненных двумя или более субъектами обеспечения единства измерений в соответствии с установленными условиями:",
+        "options": [
+          "а) сличение эталонов;",
+          "б) сличение результатов калибровки;",
+          "в) сличение результатов измерений;",
+          "г) калибровка;",
+          "д) метрологическая аттестация."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Сравнение измерений одного и того же объекта, выполненных разными лабораториями/субъектами, называется 'сличением результатов измерений'."
+      },
+      {
+        "text": "Единство измерений - это такое состояние измерений, при котором:",
+        "options": [
+          "а) результаты измерений достоверны;",
+          "б) результаты измерений, выполненных в разных местах, совпадают;",
+          "в) результаты выражены в узаконенных единицах и погрешности измерений известны с заданной вероятностью;",
+          "г) результаты измерений выражены в одинаковых единицах и определены погрешности;",
+          "д) результаты имеют одинаковые погрешности."
+        ],
+        "correct": [
+          2
+        ],
+        "explanation": "Повторяющийся базовый вопрос: это выражение результатов в узаконенных единицах при известной точности/погрешности."
+      },
+      {
+        "text": "К применению официально допускаются:",
+        "options": [
+          "а) единицы, принятые в другой стране (более развитой);",
+          "б) устаревшие единицы (в некоторых областях);",
+          "в) единицы системы СИ;",
+          "г) единицы, установленные органом власти;",
+          "д) международные единицы."
+        ],
+        "correct": [
+          2,
+          3
+        ],
+        "explanation": "Официально допускаются система СИ и внесистемные единицы, утвержденные органом государственного управления."
+      },
+      {
+        "text": "Законодательная метрология - это:",
+        "options": [
+          "а) раздел метрологии, относящийся к деятельности, направленной на обеспечение единства и необходимой точности измерений, требующий регламентации со стороны государства;",
+          "б) раздел метрологии, обеспечивающий выражение показаний СИ в узаконенных единицах."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Повторяющийся вопрос: это раздел метрологии, подлежащий государственному правовому контролю."
+      },
+      {
+        "text": "Целями местных метрологических органов являются:",
+        "options": [
+          "а) содействие международному признанию национальных метрологических организаций и систем;",
+          "б) разработка и формулирование политики в области метрологии, одобренной правительством;",
+          "в) надзор за национальными организациями, которым делегированы технические задачи;",
+          "г) поддержание мероприятий по развитию метрологической инфраструктуры;",
+          "д) реализация положений законов в сфере их деятельности."
+        ],
+        "correct": [
+          2,
+          3,
+          4
+        ],
+        "explanation": "Местные органы власти нацелены на надзор за техническими организациями, поддержку развития региональной инфраструктуры и практическую реализацию законов на местах."
+      },
+      {
+        "text": "Проведение работ по метрологической оценке, в ходе которых проводятся анализ и оценка правильности и полноты применения метрологических требований, связанных с обеспечением единства измерений - это:",
+        "options": [
+          "а) метрологическая экспертиза;",
+          "б) метрологическая оценка;",
+          "в) поверка;",
+          "г) утверждение типа средства измерений;",
+          "д) утверждение типа стандартного образца."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Анализ и оценка правильности применения метрологических требований — это метрологическая экспертиза."
+      },
+      {
+        "text": "Характеристики точности, предназначенные для оценивания погрешностей результатов измерений, получаемых при использовании алгоритма (программы):",
+        "options": [
+          "а) границы методической составляющей погрешности;",
+          "б) СКО результата измерений;",
+          "в) выборочное стандартное отклонение методической составляющей трансформированной погрешности."
+        ],
+        "correct": [
+          0,
+          2
+        ],
+        "explanation": "Для оценки погрешности ПО используются границы методической погрешности алгоритма и СКО методической составляющей трансформированной погрешности."
+      },
+      {
+        "text": "Метрологическая оценка включает в себя следующие виды работ:",
+        "options": [
+          "а) утверждение типа средства измерений;",
+          "б) оценка соответствия;",
+          "в) утверждение типа стандартного образца;",
+          "г) поверка;",
+          "д) калибровка."
+        ],
+        "correct": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "explanation": "Повторяющийся вопрос: работы включают утверждение типов СИ/СО, государственную поверку и калибровку."
+      }
+    ]
+  }
+};
+
+    // ════════════════════════════════════════════════════════════
+    // ЗАМЕНИ ЭТОТ URL после запуска verify.py на PythonAnywhere
+    const VERIFY_URL = 'https://bsuir-bot.onrender.com/verify';
+    const BOT_LINK   = 'https://t.me/bsuir_test_bot';
+    // ════════════════════════════════════════════════════════════
+
+    function showAccess() {
+      document.getElementById('accessScreen').classList.add('hidden');
+    }
+
+    function denyAccess() {
+      document.getElementById('acIcon').textContent  = '🔒';
+      document.getElementById('acTitle').textContent = 'Доступ закрыт';
+      document.getElementById('acSub').textContent   =
+        'Вы не приобрели этот тест. Купите доступ у бота — это быстро и дёшево.';
+      const wrap = document.getElementById('acBtnWrap');
+      wrap.innerHTML = `<a class="ac-btn" href="${BOT_LINK}" target="_blank">Открыть бота</a>`;
+    }
+
+    async function checkAccess() {
+      const tg = window.Telegram && window.Telegram.WebApp;
+
+      // Если открыт не как Mini App (обычный браузер) — пропускаем
+      if (!tg || !tg.initData || tg.initData.length === 0) {
+        showAccess();
+        return;
+      }
+
+      tg.ready();
+      tg.expand();
+
+      // Получаем testId из URL-параметра (по умолчанию metro)
+      const testId = new URLSearchParams(window.location.search).get('test') || 'metro';
+
+      try {
+        const resp = await fetch(VERIFY_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ initData: tg.initData, testId })
+        });
+        const data = await resp.json();
+        if (data.ok) {
+          showAccess();
+        } else {
+          denyAccess();
+        }
+      } catch (e) {
+        // Если сервер недоступен, показываем ошибку
+        document.getElementById('acIcon').textContent  = '⚠️';
+        document.getElementById('acTitle').textContent = 'Ошибка связи';
+        document.getElementById('acSub').textContent   = 'Не удалось проверить доступ. Попробуйте позже.';
+        const wrap = document.getElementById('acBtnWrap');
+        wrap.innerHTML = `<button class="ac-btn" onclick="checkAccess()">Повторить</button>`;
+      }
+    }
+
+    // Safe storage wrapper — falls back to in-memory if localStorage is unavailable
+    const safeStorage = {
+      _data: {},
+      getItem(key) {
+        try {
+          if (window.location.protocol !== 'file:' && window.localStorage) {
+            return window.localStorage.getItem(key);
+          }
+        } catch (e) {}
+        return this._data[key] !== undefined ? this._data[key] : null;
+      },
+      setItem(key, val) {
+        try {
+          if (window.location.protocol !== 'file:' && window.localStorage) {
+            window.localStorage.setItem(key, val); return;
+          }
+        } catch (e) {}
+        this._data[key] = val;
+      }
+    };
+
+    let initialErrors = [];
+    try {
+      const errStr = safeStorage.getItem('metro_e');
+      initialErrors = errStr ? JSON.parse(errStr) : [];
+      if (!Array.isArray(initialErrors)) initialErrors = [];
+    } catch (e) {
+      initialErrors = [];
+    }
+
+    let S = {
+      mode: 'ticket',
+      ticket: null,
+      qs: [], // Array of { tId, qIdx }
+      ci: 0,
+      ok: 0,
+      err: 0,
+      total: 0,
+      errors: initialErrors
+    };
+
+    let saved = { ok: 0, err: 0, total: 0 };
+    try {
+      const savedStr = safeStorage.getItem('metro_s');
+      if (savedStr) {
+        const parsed = JSON.parse(savedStr);
+        if (parsed && typeof parsed.ok === 'number') {
+          saved = parsed;
+        }
+      }
+    } catch (e) {}
+    if (saved.total) {
+      S.ok = saved.ok;
+      S.err = saved.err;
+      S.total = saved.total;
+    }
+
+    let currentTicket = null;
+    let currentQuestionIndex = 0;
+    let selectedIndices = [];
+    let sessionScore = 0;
+    let isAnswered = false;
+
+    // Helper functions
+    function shuffle(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function getAllQuestions() {
+      const list = [];
+      for (const [tId, ticket] of Object.entries(ticketsData)) {
+        ticket.questions.forEach((q, qIdx) => {
+          list.push({ tId, qIdx });
+        });
+      }
+      return list;
+    }
+
+    // ── INITIALIZATION ──
+    function init() {
+      const grid = document.getElementById('ticketsGrid');
+      grid.innerHTML = '';
+      
+      for (const [id, ticket] of Object.entries(ticketsData)) {
+        const card = document.createElement('div');
+        card.className = 'bento-card';
+        card.onclick = () => startTicket(id);
+        
+        card.innerHTML = `
+          <div>
+            <h3>${ticket.title}</h3>
+            <p>${ticket.description}</p>
+          </div>
+          <div class="bento-action">Начать тест →</div>
+        `;
+        grid.appendChild(card);
+      }
+
+      upStats();
+    }
+
+    // ── STATISTICS AND SAVING ──
+    function upStats() {
+      document.getElementById('sTotal').textContent = S.total;
+      document.getElementById('sOk').textContent = S.ok;
+      document.getElementById('sErr').textContent = S.err;
+      document.getElementById('sPct').textContent = S.total ? Math.round(S.ok / S.total * 100) + '%' : '—';
+    }
+
+    function save() {
+      safeStorage.setItem('metro_s', JSON.stringify({ ok: S.ok, err: S.err, total: S.total }));
+      safeStorage.setItem('metro_e', JSON.stringify(S.errors));
+    }
+
+    function resetStats() {
+      if (confirm("Вы уверены, что хотите сбросить всю статистику и ошибки по метрологии?")) {
+        S.ok = 0; S.err = 0; S.total = 0; S.errors = [];
+        save();
+        upStats();
+        if (S.mode === 'errors') {
+          setMode('ticket');
+        }
+      }
+    }
+
+    // ── SET MODE ──
+    function setMode(m) {
+      S.mode = m;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      
+      let btnId = 'modeTicket';
+      if (m === 'random') btnId = 'modeRandom';
+      else if (m === 'all') btnId = 'modeAll';
+      else if (m === 'errors') btnId = 'modeErrors';
+      document.getElementById(btnId).classList.add('active');
+      
+      const selectScreen = document.getElementById('selectScreen');
+      const quizScreen = document.getElementById('quizScreen');
+      const resultsScreen = document.getElementById('resultsScreen');
+      
+      if (m === 'ticket') {
+        selectScreen.classList.add('active');
+        quizScreen.classList.remove('active');
+        resultsScreen.classList.remove('active');
+      } else {
+        selectScreen.classList.remove('active');
+        resultsScreen.classList.remove('active');
+        
+        let list = [];
+        if (m === 'random') {
+          list = shuffle(getAllQuestions()).slice(0, 10);
+        } else if (m === 'all') {
+          list = shuffle(getAllQuestions());
+        } else if (m === 'errors') {
+          if (!S.errors.length) {
+            alert("Ошибок нет! Вы ответили верно на все вопросы.");
+            setMode('ticket');
+            return;
+          }
+          const errList = [];
+          S.errors.forEach(key => {
+            const parts = key.split('_');
+            if (parts.length === 2) {
+              const tId = parts[0];
+              const qIdx = parseInt(parts[1]);
+              if (ticketsData[tId] && ticketsData[tId].questions[qIdx]) {
+                errList.push({ tId, qIdx });
+              }
+            }
+          });
+          list = shuffle(errList);
+        }
+        
+        go(list);
+      }
+    }
+
+    // ── START QUIZ ──
+    function startTicket(ticketId) {
+      const list = [];
+      ticketsData[ticketId].questions.forEach((_, qIdx) => {
+        list.push({ tId: ticketId, qIdx });
+      });
+      
+      currentTicket = ticketsData[ticketId];
+      go(list);
+    }
+
+    function go(indices) {
+      S.qs = indices;
+      S.ci = 0;
+      sessionScore = 0;
+      
+      document.getElementById('selectScreen').classList.remove('active');
+      document.getElementById('resultsScreen').classList.remove('active');
+      document.getElementById('quizScreen').classList.add('active');
+      
+      loadQuestion();
+    }
+
+    // ── LOAD QUESTION ──
+    function loadQuestion() {
+      isAnswered = false;
+      selectedIndices = [];
+      
+      const item = S.qs[S.ci];
+      const q = ticketsData[item.tId].questions[item.qIdx];
+      
+      // Update Title
+      let title = ticketsData[item.tId].title;
+      if (S.mode === 'random') title = '10 случайных вопросов';
+      else if (S.mode === 'all') title = 'Все вопросы по метрологии';
+      else if (S.mode === 'errors') title = 'Работа над ошибками';
+      
+      document.getElementById('currentTicketTitle').textContent = title;
+      
+      // Update progress
+      const total = S.qs.length;
+      document.getElementById('progressText').textContent = `Вопрос ${S.ci + 1} из ${total}`;
+      document.getElementById('progressBar').style.width = `${((S.ci + 1) / total) * 100}%`;
+      
+      // Question and Explanation
+      document.getElementById('questionText').textContent = q.text;
+      document.getElementById('explanationBox').style.display = 'none';
+      
+      // Options (shuffled)
+      const list = document.getElementById('optionsList');
+      list.innerHTML = '';
+      
+      const oi = q.options.map((_, i) => i);
+      shuffle(oi);
+      
+      oi.forEach(idx => {
+        const opt = q.options[idx];
+        const optionCard = document.createElement('div');
+        optionCard.className = 'option-item';
+        optionCard.dataset.idx = idx;
+        optionCard.onclick = () => selectOption(idx, optionCard);
+        
+        optionCard.innerHTML = `
+          <div class="control-indicator"></div>
+          <div class="option-text">${opt}</div>
+        `;
+        list.appendChild(optionCard);
+      });
+      
+      const actionBtn = document.getElementById('actionBtn');
+      actionBtn.textContent = "Ответить";
+      actionBtn.disabled = true;
+    }
+
+    // ── SELECT OPTION ──
+    function selectOption(index, el) {
+      if (isAnswered) return;
+      
+      const pos = selectedIndices.indexOf(index);
+      if (pos > -1) {
+        selectedIndices.splice(pos, 1);
+        el.classList.remove('selected');
+      } else {
+        selectedIndices.push(index);
+        el.classList.add('selected');
+      }
+      
+      document.getElementById('actionBtn').disabled = selectedIndices.length === 0;
+    }
+
+    // ── ACTION BUTTON HANDLE ──
+    function handleAction() {
+      const actionBtn = document.getElementById('actionBtn');
+      
+      if (!isAnswered) {
+        isAnswered = true;
+        const item = S.qs[S.ci];
+        const q = ticketsData[item.tId].questions[item.qIdx];
+        const optionElements = document.querySelectorAll('.option-item');
+        
+        const correctSet = new Set(q.correct);
+        const selectedSet = new Set(selectedIndices);
+        
+        let isCorrect = true;
+        if (correctSet.size !== selectedSet.size) {
+          isCorrect = false;
+        } else {
+          for (const idx of selectedSet) {
+            if (!correctSet.has(idx)) {
+              isCorrect = false;
+              break;
+            }
+          }
+        }
+        
+        S.total++;
+        const qKey = `${item.tId}_${item.qIdx}`;
+        
+        if (isCorrect) {
+          S.ok++;
+          sessionScore++;
+          const errPos = S.errors.indexOf(qKey);
+          if (errPos > -1) S.errors.splice(errPos, 1);
+        } else {
+          S.err++;
+          if (S.errors.indexOf(qKey) === -1) {
+            S.errors.push(qKey);
+          }
+        }
+        
+        save();
+        upStats();
+        
+        // Show correct / incorrect styling
+        optionElements.forEach(el => {
+          const idx = parseInt(el.dataset.idx);
+          const isItemCorrect = correctSet.has(idx);
+          const isItemSelected = selectedSet.has(idx);
+          
+          if (isItemCorrect) {
+            el.classList.add('correct');
+          } else if (isItemSelected) {
+            el.classList.add('wrong');
+          }
+        });
+        
+        // Show explanation
+        document.getElementById('explanationText').textContent = q.explanation;
+        document.getElementById('explanationBox').style.display = 'block';
+        
+        // Update Action Button
+        if (S.ci + 1 < S.qs.length) {
+          actionBtn.textContent = "Следующий вопрос →";
+        } else {
+          actionBtn.textContent = "Завершить тест";
+        }
+      } else {
+        if (S.ci + 1 < S.qs.length) {
+          S.ci++;
+          loadQuestion();
+        } else {
+          showResults();
+        }
+      }
+    }
+
+    // ── SHOW RESULTS ──
+    function showResults() {
+      document.getElementById('quizScreen').classList.remove('active');
+      document.getElementById('resultsScreen').classList.add('active');
+      
+      const total = S.qs.length;
+      document.getElementById('resultsScore').innerHTML = `${sessionScore} <span>/ ${total}</span>`;
+      
+      const pct = (sessionScore / total) * 100;
+      let msg = "";
+      if (pct === 100) {
+        msg = "Идеальный результат! 100% правильных ответов. Вы превосходно знаете законодательную метрологию!";
+      } else if (pct >= 80) {
+        msg = "Отличный результат! Отличные знания нормативной базы.";
+      } else if (pct >= 50) {
+        msg = "Хороший результат, но есть куда стремиться. Почитайте пояснения к вопросам.";
+      } else {
+        msg = "Тест не пройден. Рекомендуется повторно изучить Закон РБ 'Об обеспечении единства измерений'.";
+      }
+      
+      document.getElementById('resultsText').textContent = msg;
+    }
+
+    // ── EXIT TO MENU ──
+    function exitToMenu() {
+      document.getElementById('quizScreen').classList.remove('active');
+      document.getElementById('resultsScreen').classList.remove('active');
+      document.getElementById('selectScreen').classList.add('active');
+      setMode('ticket');
+    }
+
+    // Run on startup
+    window.onload = function() {
+      checkAccess();
+      init();
+    };
+  </script>
+</body>
+</html>

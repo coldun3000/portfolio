@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ТНиС // ЭКЗАМЕН</title>
-  <meta name="description" content="Тренажёр для подготовки к экзамену по ТНиС">
+  <title>КиСА // Экзаменационный Тренажер (Кириллов В. И.)</title>
+  <meta name="description" content="100 экзаменационных вопросов по квалиметрии и системному анализу.">
   <!-- Telegram Mini App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -12,22 +12,25 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0c0c0c;
-      --surface: #161616;
-      --surface-2: #1e1e1e;
-      --surface-3: #262626;
-      --border-hard: #333;
-      --border-accent: #e8ff00;
-      --text: #e0e0e0;
-      --text-dim: #777;
-      --text-bright: #fff;
-      --accent: #e8ff00;
-      --accent-dim: rgba(232, 255, 0, 0.1);
-      --correct: #00ff87;
-      --correct-dim: rgba(0, 255, 135, 0.08);
-      --wrong: #ff3333;
-      --wrong-dim: rgba(255, 51, 51, 0.08);
-      --mono: 'JetBrains Mono', 'Consolas', monospace;
+      --bg: #090a0f;
+      --surface: #12131c;
+      --surface-2: #1a1c29;
+      --surface-3: #232638;
+      --border: #2c3047;
+      --border-bright: #3d4363;
+      --accent: #00f0ff;
+      --accent-dim: rgba(0, 240, 255, 0.12);
+      --accent-gold: #ffb700;
+      --text: #d8dbe8;
+      --text-dim: #7f85a3;
+      --text-bright: #ffffff;
+      --correct: #00ff88;
+      --correct-dim: rgba(0, 255, 136, 0.12);
+      --wrong: #ff3366;
+      --wrong-dim: rgba(255, 51, 102, 0.12);
+      --missed: #ffaa00;
+      --missed-dim: rgba(255, 170, 0, 0.12);
+      --mono: 'JetBrains Mono', monospace;
       --display: 'Unbounded', sans-serif;
     }
 
@@ -36,111 +39,75 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
 
-    button {
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-      cursor: pointer;
-    }
-
-    a, [role="button"] {
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* noise overlay removed — caused touch interception on iOS WKWebView */
-
-    /* ── ACCESS SCREENS ── */
-    #accessScreen {
-      position: fixed; inset: 0; z-index: 8000;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--bg);
-    }
-    #accessScreen .ac-box {
-      max-width: 400px; width: 90%;
-      text-align: center; padding: 40px 24px;
-      border: 2px solid var(--border-hard); background: var(--surface);
-    }
-    #accessScreen .ac-icon { font-size: 2.8rem; margin-bottom: 16px; }
-    #accessScreen .ac-title {
-      font-family: var(--display); font-size: 1.3rem; font-weight: 800;
-      color: var(--text-bright); margin-bottom: 8px;
-    }
-    #accessScreen .ac-sub {
-      font-size: 0.8rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 20px;
-    }
-    #accessScreen .ac-btn {
-      display: inline-block; padding: 12px 24px;
-      background: var(--accent); color: var(--bg);
-      font-family: var(--display); font-size: 0.82rem; font-weight: 800;
-      text-transform: uppercase; letter-spacing: 0.08em;
-      border: none; cursor: pointer; text-decoration: none;
-      touch-action: manipulation;
-    }
-    #accessScreen.hidden { display: none !important; }
-
-    .container {
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 16px 16px 100px;
-    }
-
     /* ── HEADER ── */
-    .header {
-      border-bottom: 3px solid var(--accent);
-      padding: 28px 0 18px;
-      margin-bottom: 24px;
+    header {
+      border-bottom: 2px solid var(--accent);
+      padding: 20px 16px;
+      background: var(--surface);
     }
-
-    .header-top {
+    .header-content {
+      max-width: 940px;
+      margin: 0 auto;
       display: flex;
-      align-items: baseline;
       justify-content: space-between;
-      gap: 12px;
+      align-items: center;
       flex-wrap: wrap;
+      gap: 16px;
     }
-
-    .header h1 {
+    h1 {
       font-family: var(--display);
-      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-size: clamp(1.1rem, 3.2vw, 1.6rem);
       font-weight: 900;
       color: var(--text-bright);
-      letter-spacing: -0.04em;
-      line-height: 1;
+      letter-spacing: -0.03em;
     }
+    h1 span { color: var(--accent); }
 
-    .header h1 span {
-      color: var(--accent);
-    }
-
-    .header-tag {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
+    .reset-stats-btn {
+      background: none;
+      border: 1px solid var(--border);
       color: var(--text-dim);
-      background: var(--surface);
-      border: 1px solid var(--border-hard);
-      padding: 4px 10px;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      padding: 6px 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: all 0.2s;
+    }
+    .reset-stats-btn:hover {
+      color: var(--wrong);
+      border-color: var(--wrong);
     }
 
-    /* ── STATS ── */
+    .container {
+      max-width: 940px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 16px 80px;
+      flex: 1;
+    }
+
+    /* ── STATS BAR ── */
     .stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 2px;
       margin-bottom: 20px;
-      background: var(--border-hard);
-      border: 2px solid var(--border-hard);
+      background: var(--border);
+      border: 2px solid var(--border);
     }
-
     .stat-cell {
       background: var(--surface);
       padding: 12px 8px;
       text-align: center;
     }
-
     .stat-num {
       font-family: var(--display);
       font-size: clamp(1.1rem, 3vw, 1.6rem);
@@ -148,937 +115,2129 @@
       color: var(--text-bright);
       line-height: 1;
     }
-
     .stat-num.s-ok { color: var(--correct); }
     .stat-num.s-err { color: var(--wrong); }
     .stat-num.s-pct { color: var(--accent); }
-
     .stat-lbl {
       font-size: 0.55rem;
       text-transform: uppercase;
       letter-spacing: 0.18em;
       color: var(--text-dim);
-      margin-top: 4px;
+      margin-top: 5px;
     }
 
     /* ── MODES ── */
     .modes {
       display: flex;
       gap: 0;
-      margin-bottom: 16px;
-      border: 2px solid var(--border-hard);
+      margin-bottom: 20px;
+      border: 2px solid var(--border);
       overflow-x: auto;
     }
-
     .mode-btn {
       flex: 1;
       min-width: 0;
-      padding: 11px 6px;
+      padding: 12px 8px;
       background: var(--surface);
       color: var(--text-dim);
       font-family: var(--mono);
-      font-size: clamp(0.6rem, 1.6vw, 0.72rem);
+      font-size: clamp(0.62rem, 1.8vw, 0.75rem);
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       border: none;
-      border-right: 1px solid var(--border-hard);
+      border-right: 1px solid var(--border);
       cursor: pointer;
       transition: background 0.15s, color 0.15s;
       white-space: nowrap;
     }
-
     .mode-btn:last-child { border-right: none; }
     .mode-btn:hover { background: var(--surface-2); color: var(--text); }
     .mode-btn.active {
       background: var(--accent);
-      color: var(--bg);
+      color: #000000;
       font-weight: 800;
     }
 
+    /* ── SCREENS ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
     /* ── TICKET GRID ── */
-    .tickets {
+    .tickets-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
-      gap: 0;
-      margin-bottom: 20px;
-      border: 2px solid var(--border-hard);
-      background: var(--border-hard);
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
     }
-
-    .t-btn {
-      aspect-ratio: 1;
+    .ticket-card {
       background: var(--surface);
-      color: var(--text-dim);
-      font-family: var(--display);
-      font-size: 0.85rem;
-      font-weight: 700;
-      border: none;
+      border: 2px solid var(--border);
+      padding: 18px;
       cursor: pointer;
-      transition: all 0.12s;
-      border: 1px solid transparent;
-    }
-
-    .t-btn:hover { background: var(--surface-3); color: var(--text); border-color: var(--accent); }
-    .t-btn.active { background: var(--accent); color: var(--bg); }
-
-    /* ── PROGRESS ── */
-    .progress {
-      margin-bottom: 20px;
-    }
-
-    .progress-top {
+      transition: all 0.2s ease;
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--text-dim);
-      margin-bottom: 5px;
     }
-
-    .progress-bar {
-      height: 3px;
-      background: var(--surface-3);
+    .ticket-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 240, 255, 0.1);
     }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--accent);
-      transition: width 0.3s ease;
-      width: 0%;
-    }
-
-    /* ── QUESTION ── */
-    .q-card {
-      border: 2px solid var(--border-hard);
-      padding: 24px 20px;
-      margin-bottom: 12px;
-      background: var(--surface);
-      animation: slideUp 0.25s ease;
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .q-meta {
+    .ticket-card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border-hard);
+      margin-bottom: 10px;
     }
-
-    .q-num {
-      font-family: var(--display);
-      font-size: 0.7rem;
-      font-weight: 800;
-      color: var(--accent);
-      letter-spacing: 0.06em;
-    }
-
-    .q-topic {
-      font-size: 0.6rem;
+    .ticket-tag {
+      font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 3px 8px;
+      font-weight: 700;
+    }
+    .ticket-count {
+      font-size: 0.7rem;
       color: var(--text-dim);
     }
-
-    .q-text {
-      font-size: clamp(0.88rem, 2.2vw, 1rem);
-      font-weight: 500;
-      line-height: 1.65;
+    .ticket-card h3 {
+      font-family: var(--display);
+      font-size: 0.95rem;
+      font-weight: 700;
       color: var(--text-bright);
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+    .ticket-card p {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* ── QUIZ SCREEN ── */
+    .quiz-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .quiz-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
       margin-bottom: 20px;
-      font-family: var(--mono);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .question-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      line-height: 1.6;
+      margin-bottom: 20px;
     }
 
     /* ── OPTIONS ── */
-    .opts {
+    .options-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 10px;
+      margin-bottom: 24px;
     }
-
-    .opt {
+    .option-item {
+      background: var(--surface-2);
+      border: 2px solid var(--border);
+      padding: 14px 16px;
+      cursor: pointer;
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      width: 100%;
-      padding: 13px 16px;
-      border: 2px solid var(--border-hard);
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: clamp(0.78rem, 2vw, 0.88rem);
-      font-weight: 500;
-      cursor: pointer;
-      text-align: left;
-      line-height: 1.55;
-      transition: border-color 0.12s, background 0.12s, transform 0.1s;
+      gap: 14px;
+      transition: all 0.15s ease;
     }
-
-    .opt:hover:not(.locked) {
+    .option-item:hover {
+      border-color: var(--text-dim);
+      background: var(--surface-3);
+    }
+    .option-item.selected {
       border-color: var(--accent);
       background: var(--accent-dim);
-      transform: translateX(4px);
+    }
+    .option-item.correct {
+      border-color: var(--correct) !important;
+      background: var(--correct-dim) !important;
+    }
+    .option-item.wrong {
+      border-color: var(--wrong) !important;
+      background: var(--wrong-dim) !important;
+    }
+    .option-item.missed {
+      border-color: var(--missed) !important;
+      background: var(--missed-dim) !important;
     }
 
-    .opt-key {
-      flex-shrink: 0;
-      width: 24px;
-      height: 24px;
-      border: 2px solid var(--border-hard);
+    /* Square Checkbox (Identical for Single & Multi) */
+    .control-indicator {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--text-dim);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: var(--display);
-      font-weight: 800;
-      font-size: 0.65rem;
-      color: var(--text-dim);
-      transition: all 0.12s;
-      margin-top: 1px;
+      margin-top: 3px;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
     }
-
-    .opt:hover:not(.locked) .opt-key {
+    .option-item.selected .control-indicator {
       border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .opt.is-correct {
-      border-color: var(--correct);
-      background: var(--correct-dim);
-      cursor: default;
-    }
-    .opt.is-correct .opt-key { border-color: var(--correct); color: var(--correct); background: transparent; }
-
-    .opt.is-wrong {
-      border-color: var(--wrong);
-      background: var(--wrong-dim);
-      cursor: default;
-    }
-    .opt.is-wrong .opt-key { border-color: var(--wrong); color: var(--wrong); }
-
-    .opt.locked {
-      cursor: default;
-      opacity: 0.35;
-    }
-    .opt.is-correct.locked, .opt.is-wrong.locked { opacity: 1; }
-
-    /* ── FEEDBACK ── */
-    .feedback {
-      margin-top: 14px;
-      padding: 12px 16px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      line-height: 1.5;
-      border-left: 4px solid;
-      animation: slideUp 0.2s ease;
-    }
-
-    .feedback.fb-ok {
-      border-color: var(--correct);
-      color: var(--correct);
-      background: var(--correct-dim);
-    }
-
-    .feedback.fb-err {
-      border-color: var(--wrong);
-      color: var(--wrong);
-      background: var(--wrong-dim);
-    }
-
-    .feedback .fb-answer { color: var(--text); font-weight: 400; margin-top: 2px; }
-
-    /* ── NEXT BTN ── */
-    .next-btn {
-      width: 100%;
-      padding: 15px;
-      border: 3px solid var(--accent);
-      background: transparent;
-      color: var(--accent);
-      font-family: var(--display);
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      cursor: pointer;
-      transition: all 0.15s;
-      margin-top: 14px;
-    }
-
-    .next-btn:hover {
       background: var(--accent);
-      color: var(--bg);
+    }
+    .option-item.correct .control-indicator {
+      border-color: var(--correct);
+      background: var(--correct);
+    }
+    .option-item.wrong .control-indicator {
+      border-color: var(--wrong);
+      background: var(--wrong);
+    }
+    .option-item.missed .control-indicator {
+      border-color: var(--missed);
+      background: var(--missed);
+    }
+    .control-indicator::after {
+      content: '';
+      display: none;
+      width: 6px;
+      height: 6px;
+      background: #000000;
+    }
+    .option-item.selected .control-indicator::after,
+    .option-item.correct .control-indicator::after,
+    .option-item.wrong .control-indicator::after,
+    .option-item.missed .control-indicator::after {
+      display: block;
     }
 
-    /* ── WELCOME ── */
-    .welcome {
-      text-align: center;
-      padding: 50px 0;
-      border: 2px solid var(--border-hard);
-      background: var(--surface);
+    .option-text {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--text);
     }
+    .option-item.selected .option-text { color: var(--text-bright); }
 
-    .welcome-icon {
-      font-size: 2.5rem;
-      margin-bottom: 14px;
-      filter: grayscale(0.4);
+    /* ── EXPLANATION BOX ── */
+    .explanation-box {
+      background: var(--surface-2);
+      border-left: 4px solid var(--accent);
+      padding: 16px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      line-height: 1.65;
+      display: none;
     }
+    .explanation-box strong { color: var(--accent); }
 
-    .welcome h2 {
+    /* ── ACTION BUTTONS ── */
+    .actions-panel {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .btn {
       font-family: var(--display);
-      font-size: clamp(1rem, 3vw, 1.3rem);
+      font-size: 0.78rem;
       font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 14px 24px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #000000;
+      flex: 1;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #33f3ff;
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+    }
+    .btn-primary:disabled {
+      background: var(--surface-3);
+      color: var(--text-dim);
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-3);
       color: var(--text-bright);
-      margin-bottom: 8px;
     }
 
-    .welcome p {
+    /* ── RESULTS SCREEN ── */
+    .results-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      padding: 36px 24px;
+      text-align: center;
+    }
+    .results-score {
+      font-family: var(--display);
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin: 16px 0;
+    }
+    .results-score span {
+      font-size: 1.5rem;
       color: var(--text-dim);
-      font-size: 0.78rem;
-      max-width: 400px;
-      margin: 0 auto;
+    }
+    .results-text {
+      font-size: 0.9rem;
+      color: var(--text);
+      max-width: 500px;
+      margin: 0 auto 28px;
       line-height: 1.6;
     }
 
-    /* ── RESULTS ── */
-    .results {
-      animation: slideUp 0.35s ease;
-    }
-
-    .r-hero {
-      text-align: center;
-      border: 2px solid var(--border-hard);
-      background: var(--surface);
-      padding: 36px 20px 28px;
-      margin-bottom: 16px;
-    }
-
-    .r-icon { font-size: 3rem; margin-bottom: 10px; filter: grayscale(0.3); }
-    .r-title {
-      font-family: var(--display);
-      font-size: clamp(1.3rem, 4vw, 1.8rem);
-      font-weight: 900;
-      color: var(--text-bright);
-      margin-bottom: 4px;
-    }
-    .r-sub { color: var(--text-dim); font-size: 0.82rem; }
-
-    .r-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-      background: var(--border-hard);
-      border: 2px solid var(--border-hard);
-      margin-bottom: 16px;
-    }
-
-    .r-stat {
-      background: var(--surface);
-      padding: 18px 8px;
-      text-align: center;
-    }
-
-    .r-stat .rv {
-      font-family: var(--display);
-      font-size: 1.8rem;
-      font-weight: 800;
-    }
-
-    .r-stat .rl {
-      font-size: 0.55rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--text-dim);
-      margin-top: 4px;
-    }
-
-    .r-actions {
-      display: flex;
-      gap: 2px;
-      margin-bottom: 20px;
-    }
-
-    .r-actions button {
-      flex: 1;
-      padding: 14px 8px;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .r-btn-primary {
-      background: var(--accent);
-      color: var(--bg);
-      border: 2px solid var(--accent);
-    }
-    .r-btn-primary:hover { background: transparent; color: var(--accent); }
-
-    .r-btn-sec {
-      background: var(--surface);
-      color: var(--text);
-      border: 2px solid var(--border-hard);
-    }
-    .r-btn-sec:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* review */
-    .review-title {
-      font-family: var(--display);
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--wrong);
-      margin-bottom: 10px;
-      padding-bottom: 6px;
-      border-bottom: 2px solid var(--wrong);
-    }
-
-    .rev-item {
-      border: 1px solid var(--border-hard);
-      border-left: 4px solid var(--wrong);
-      padding: 12px 14px;
-      margin-bottom: 6px;
-      background: var(--surface);
-      font-size: 0.8rem;
-    }
-
-    .rev-q { font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.5; }
-    .rev-yours { color: var(--wrong); font-size: 0.75rem; }
-    .rev-right { color: var(--correct); font-size: 0.75rem; }
-
-    /* ── KBD HINT ── */
-    .kbd-hint {
-      text-align: center;
-      font-size: 0.6rem;
-      color: var(--text-dim);
-      margin-top: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .kbd-hint kbd {
-      border: 1px solid var(--border-hard);
-      padding: 1px 5px;
-      font-family: var(--mono);
-      font-size: 0.6rem;
-    }
-
-    /* ── HIDDEN ── */
-    .hidden { display: none !important; }
-
-    /* scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-hard); }
-
-    /* ── MOBILE ── */
-    @media (max-width: 500px) {
-      .stats { grid-template-columns: repeat(2, 1fr); }
-      .tickets { grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); }
-      .q-card { padding: 16px 14px; }
+    @media (max-width: 600px) {
       .modes { flex-wrap: wrap; }
-      .mode-btn {
-        flex: 1 1 45%;
-        border-bottom: 1px solid var(--border-hard);
-        border-right: 1px solid var(--border-hard);
-        padding: 12px 6px;
-        font-size: 0.68rem;
-      }
+      .mode-btn { width: 50%; flex: none; }
       .mode-btn:nth-child(even) { border-right: none; }
-      .mode-btn:nth-child(3), .mode-btn:nth-child(4) { border-bottom: none; }
+      .mode-btn:nth-child(1), .mode-btn:nth-child(2) { border-bottom: 1px solid var(--border); }
     }
   </style>
 </head>
 <body>
+
+  <header>
+    <div class="header-content">
+      <h1>КВАЛИМЕТРИЯ <span>// КиСА</span></h1>
+      <button class="reset-stats-btn" onclick="resetStats()">Сбросить статистику</button>
+    </div>
+  </header>
+
   <div class="container">
-    <header class="header">
-      <div class="header-top">
-        <h1>ТНиС<span>//</span>ЭКЗАМЕН</h1>
-        <button class="reset-stats-btn" onclick="resetStats()" style="background: none; border: 1px solid var(--border-hard); color: var(--text-dim); font-family: var(--mono); font-size: 0.65rem; padding: 6px 10px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; transition: all 0.2s;" onmouseover="this.style.color='var(--accent)'; this.style.borderColor='var(--accent)';" onmouseout="this.style.color='var(--text-dim)'; this.style.borderColor='var(--border-hard)';">сбросить статистику</button>
-      </div>
-    </header>
-
-    <div class="stats" id="statsBar">
-      <div class="stat-cell"><div class="stat-num" id="sTotal">0</div><div class="stat-lbl">всего</div></div>
-      <div class="stat-cell"><div class="stat-num s-ok" id="sOk">0</div><div class="stat-lbl">верно</div></div>
-      <div class="stat-cell"><div class="stat-num s-err" id="sErr">0</div><div class="stat-lbl">ошибки</div></div>
-      <div class="stat-cell"><div class="stat-num s-pct" id="sPct">—</div><div class="stat-lbl">точность</div></div>
+    
+    <!-- STATS BAR -->
+    <div class="stats">
+      <div class="stat-cell"><div class="stat-num" id="sTotal">0</div><div class="stat-lbl">Всего</div></div>
+      <div class="stat-cell"><div class="stat-num s-ok" id="sOk">0</div><div class="stat-lbl">Верно</div></div>
+      <div class="stat-cell"><div class="stat-num s-err" id="sErr">0</div><div class="stat-lbl">Ошибки</div></div>
+      <div class="stat-cell"><div class="stat-num s-pct" id="sPct">—</div><div class="stat-lbl">Точность</div></div>
     </div>
 
+    <!-- MODES TABS -->
     <div class="modes">
-      <button class="mode-btn active" id="modeTicket" data-mode="ticket">// билеты</button>
-      <button class="mode-btn" id="modeRandom" data-mode="random">// 17 случайных</button>
-      <button class="mode-btn" id="modeAll" data-mode="all">// все вопросы</button>
-      <button class="mode-btn" id="modeErrors" data-mode="errors">// ошибки</button>
+      <button class="mode-btn active" id="modeTicket" onclick="setMode('ticket')">// Билеты</button>
+      <button class="mode-btn" id="modeRandom" onclick="setMode('random')">// 15 случайных</button>
+      <button class="mode-btn" id="modeAll" onclick="setMode('all')">// Все вопросы</button>
+      <button class="mode-btn" id="modeErrors" onclick="setMode('errors')">// Ошибки</button>
     </div>
 
-    <div class="tickets" id="ticketGrid"></div>
+    <!-- SCREEN 1: TICKETS SELECTION -->
+    <div id="selectScreen" class="screen active">
+      <div class="tickets-grid" id="ticketsContainer"></div>
+    </div>
 
-    <div class="progress hidden" id="progressWrap">
-      <div class="progress-top">
-        <span id="pLabel">вопрос 1/17</span>
-        <span id="pPct">0%</span>
+    <!-- SCREEN 2: QUIZ INTERFACE -->
+    <div id="quizScreen" class="screen">
+      <div class="quiz-card">
+        <div class="quiz-top">
+          <span id="currentTicketTitle">Билет 1</span>
+          <span id="progressText">Вопрос 1 из 10</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+        <div class="question-title" id="questionText">Текст вопроса...</div>
+        <div class="options-list" id="optionsList"></div>
+        <div class="explanation-box" id="explanationBox">
+          <strong>💡 Пояснение:</strong>
+          <div id="explanationText" style="margin-top: 6px;"></div>
+        </div>
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+      <div class="actions-panel">
+        <button class="btn btn-secondary" onclick="exitToMenu()">← Меню</button>
+        <button class="btn btn-primary" id="actionBtn" onclick="handleAction()" disabled>Ответить</button>
+      </div>
     </div>
 
-    <div id="welcomeScreen" class="welcome">
-      <div class="welcome-icon">⌨</div>
-      <h2>Выбери билет или режим</h2>
-      <p>Вопросы по реальной программе экзамена. Доступны все 20 билетов.</p>
+    <!-- SCREEN 3: RESULTS -->
+    <div id="resultsScreen" class="screen">
+      <div class="results-card">
+        <h2 style="font-family: var(--display); font-size: 1.3rem;">Тестирование завершено</h2>
+        <div class="results-score" id="resultsScore">0 <span>/ 10</span></div>
+        <p class="results-text" id="resultsText">Результат...</p>
+        <button class="btn btn-primary" onclick="exitToMenu()">Выбрать другой билет</button>
+      </div>
     </div>
 
-    <div id="questionArea" class="hidden"></div>
-    <div id="resultsScreen" class="hidden"></div>
-
-    <div class="kbd-hint hidden" id="kbdHint">
-      <kbd>1</kbd>–<kbd>5</kbd> ответ &nbsp;&bull;&nbsp; <kbd>enter</kbd> далее
-    </div>
   </div>
 
-  <!-- Access gate: shows during check, then hides or shows denied -->
-  <div id="accessScreen">
-    <div class="ac-box">
-      <div class="ac-icon" id="acIcon">⏳</div>
-      <div class="ac-title" id="acTitle">Проверка доступа...</div>
-      <div class="ac-sub" id="acSub">Подожди, проверяем твою подписку</div>
-      <div id="acBtnWrap"></div>
-    </div>
-  </div>
-
-<script>
-// ════════════════════════════════════════════════════════════
-// ЗАМЕНИ ЭТОТ URL после запуска verify.py на PythonAnywhere
-const VERIFY_URL = 'https://bsuir-bot.onrender.com/verify';
-const BOT_LINK   = 'https://t.me/bsuir_test_bot';
-// ════════════════════════════════════════════════════════════
-
-function showAccess() {
-  document.getElementById('accessScreen').classList.add('hidden');
-}
-
-function denyAccess() {
-  document.getElementById('acIcon').textContent  = '🔒';
-  document.getElementById('acTitle').textContent = 'Доступ закрыт';
-  document.getElementById('acSub').textContent   =
-    'Ты не купил этот тест. Купи доступ у бота — это быстро и дёшево.';
-  const wrap = document.getElementById('acBtnWrap');
-  wrap.innerHTML = `<a class="ac-btn" href="${BOT_LINK}" target="_blank">Открыть бота</a>`;
-}
-
-async function checkAccess() {
-  const tg = window.Telegram && window.Telegram.WebApp;
-
-  // Если открыт не как Mini App (обычный браузер) — пропускаем
-  if (!tg || !tg.initData || tg.initData.length === 0) {
-    showAccess();
-    return;
-  }
-
-  tg.ready();
-  tg.expand();
-
-  // Получаем testId из URL-параметра
-  const testId = new URLSearchParams(window.location.search).get('test') || 'tnis';
-
-  try {
-    const resp = await fetch(VERIFY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ initData: tg.initData, testId })
-    });
-    const data = await resp.json();
-    if (data.ok) {
-      showAccess();
-    } else {
-      denyAccess();
-    }
-  } catch (e) {
-    // Если сервер недоступен, показываем ошибку
-    document.getElementById('acIcon').textContent  = '⚠️';
-    document.getElementById('acTitle').textContent = 'Ошибка связи';
-    document.getElementById('acSub').textContent   = 'Не удалось проверить доступ. Попробуй позже.';
-    const wrap = document.getElementById('acBtnWrap');
-    wrap.innerHTML = `<button class="ac-btn" onclick="checkAccess()">Повторить</button>`;
-  }
-}
-
-// Safe storage wrapper — falls back to in-memory if localStorage is unavailable
-const safeStorage = {
-  _data: {},
-  getItem(key) {
-    try {
-      if (window.location.protocol !== 'file:' && window.localStorage) {
-        return window.localStorage.getItem(key);
+  <script>
+    const ticketsData = {
+  "1": {
+    "title": "Билет 1: Концептуальные основы квалиметрии и классификация ПК",
+    "description": "Понятие качества, предмет и задачи квалиметрии, таксономия и свойства показателей качества.",
+    "questions": [
+      {
+        "text": "Каково строгое научно-методическое определение дисциплины «Квалиметрия» согласно ГОСТ 15467-79 и трудам В. И. Кириллова?",
+        "options": [
+          "а) Научная область, объединяющая количественные методы оценки качества продукции, процессов и систем для обоснования управленческих и проектных решений;",
+          "б) Прикладной раздел метрологии, занимающийся поверкой и калибровкой физических измерительных приборов;",
+          "в) Экономическая дисциплина, изучающая ценообразование и динамику рыночного спроса на потребительские товары;",
+          "г) Раздел системного анализа, исследующий исключительно топологию телекоммуникационных сетей."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Квалиметрия — наука о количественных методах оценки качества продукции, систем и услуг, обеспечивающая формализацию многокритериальных оценок для принятия решений."
+      },
+      {
+        "text": "Что в теории квалиметрии понимается под «свойством продукции» в отличие от «показателя качества»?",
+        "options": [
+          "а) Свойство — объективная философско-техническая способность продукции проявляться при создании и потреблении, а показатель качества — количественная характеристика одного или нескольких свойств;",
+          "б) Свойство — числовое значение, зафиксированное в паспорте изделия, а показатель качества — субъективное мнение эксперта;",
+          "в) Свойство относится только к материальным объектам, а показатель качества — только к программному обеспечению;",
+          "г) Свойство и показатель качества являются полными синонимами и математически не различаются."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Свойство — объективная характеристика объекта, а показатель качества (ПК) — мера (числовая или балльная оценка) выраженности данного свойства."
+      },
+      {
+        "text": "Какие из перечисленных групп показателей качества относятся к группе «Показателей назначения»? (выберите все верные):",
+        "options": [
+          "а) Показатели функциональной и технической эффективности (пропускная способность канала, тактовая частота, выходная мощность);",
+          "б) Показатели конструктивного состава и структуры изделия (габаритно-массовые характеристики, емкость памяти);",
+          "в) Показатели приспособляемости к режимам применения и условиям эксплуатации;",
+          "г) Показатели затрат на периодическое техническое обслуживание и ремонт."
+        ],
+        "correct": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Показатели назначения делятся на функциональные, конструктивные и показатели состава/структуры. Затраты на ТО относятся к показателям технологичности или экономическим."
+      },
+      {
+        "text": "Какое ключевое свойство надежности характеризует способность объекта непрерывно сохранять работоспособное состояние в течение заданного интервала времени?",
+        "options": [
+          "а) Безотказность (наработка на отказ, интенсивность отказов λ(t));",
+          "б) Долговечность (гамма-процентный ресурс, средний срок службы);",
+          "в) Ремонтопригодность (среднее время восстановления T_в);",
+          "г) Сохраняемость (срок сохраняемости в упаковке)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Безотказность — свойство объекта непрерывно сохранять работоспособное состояние в течение некоторого времени или наработки (ГОСТ 27.002)."
+      },
+      {
+        "text": "Какие 4 базовых единичных свойства составляют комплексное свойство «Надежность» по ГОСТ 27.002? (выберите все верные):",
+        "options": [
+          "а) Безотказность;",
+          "б) Долговечность;",
+          "в) Ремонтопригодность;",
+          "г) Сохраняемость;",
+          "д) Патентная чистота."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Классическая четверка свойств надежности: безотказность, долговечность, ремонтопригодность и сохраняемость."
+      },
+      {
+        "text": "В чем заключается фундаментальное различие между «единичными», «комплексными» и «интегральными» показателями качества?",
+        "options": [
+          "а) Единичный относится к одному простому свойству, комплексный объединяет несколько свойств, а интегральный отражает отношение суммарного полезного эффекта к суммарным затратам на создание и эксплуатацию;",
+          "б) Единичный измеряется в физических единицах, комплексный — в баллах от 0 до 10, а интегральный — исключительно в процентах;",
+          "в) Единичный определяется инструментальным методом, а комплексный и интегральный — только методом социологического опроса;",
+          "г) Интегральный показатель качества вычисляется только для нелинейных динамических систем."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Интегральный показатель качества I = W_эфф / (З_созд + З_экспл) отражает экономическую эффективность качества на единицу совокупных затрат."
+      },
+      {
+        "text": "Какие показатели относятся к группе «Показателей стандартизации и унификации»? (выберите все верные):",
+        "options": [
+          "а) Коэффициент применяемости деталей и узлов K_пр;",
+          "б) Коэффициент повторяемости составных частей K_повт;",
+          "в) Коэффициент взаимной унификации для группы изделий K_межпр;",
+          "г) Коэффициент готовности радиоэлектронной системы K_г."
+        ],
+        "correct": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Коэффициент готовности K_г = T_{ср} / (T_{ср} + T_в) относится к комплексным показателям надежности, а остальные три — к показателям стандартизации и унификации."
+      },
+      {
+        "text": "Какие основные требования предъявляются к структуре «Дерева свойств» (иерархической декомпозиции качества)? (выберите все верные):",
+        "options": [
+          "а) Свойства одного яруса декомпозиции должны быть взаимно независимыми по предпочтению;",
+          "б) Совокупность свойств нижнего уровня должна полностью раскрывать содержание родительского узла верхнего уровня;",
+          "в) На нижнем ярусе располагаются единичные измеряемые или однозначно оцениваемые показатели;",
+          "г) Сумма коэффициентов весомости ветвей, исходящих из одного общего родительского узла, строго равна 1;",
+          "д) Количество уровней дерева должно быть строго нечетным."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Дерево свойств подчиняется правилам системной декомпозиции, независимости свойств на одном ярусе, нормирования суммы весомостей к единице и завершения единичными показателями."
+      },
+      {
+        "text": "Что характеризует показатель «Патентная чистота» изделия?",
+        "options": [
+          "а) Юридическое свойство объекта, заключающееся в том, что он может свободно реализовываться в конкретной стране без нарушения действующих там исключительных патентных прав третьих лиц;",
+          "б) Количество патентов, полученных разработчиками в процессе проектирования данного изделия;",
+          "в) Отсутствие вредных химических примесей и микроорганизмов на поверхности изделия;",
+          "г) Срок действия свидетельства о государственной регистрации товарного знака."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Патентная чистота — юридическое качество объекта, гарантирующее ненарушение действующих патентов на территории конкретного государства."
+      },
+      {
+        "text": "К какой категории относится показатель «Удельная трудоемкость изготовления изделия»?",
+        "options": [
+          "а) Показатели технологичности конструкции;",
+          "б) Показатели патентной защиты;",
+          "в) Эргономические показатели;",
+          "г) Показатели устойчивости к внешним воздействиям."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Трудоемкость, материалоемкость и коэффициент сборности формируют группу показателей технологичности (ГОСТ 14.205)."
       }
-    } catch (e) {}
-    return this._data[key] !== undefined ? this._data[key] : null;
+    ]
   },
-  setItem(key, val) {
+  "2": {
+    "title": "Билет 2: Шкалы измерений, базовые образцы и единичные оценки",
+    "description": "Теория шкал Стивенса, допустимые преобразования, виды базовых образцов и шкалирование.",
+    "questions": [
+      {
+        "text": "В какой шкале измерений согласно классификации Стивенса допустимы операции вычитания и сложения значений, но НЕ имеет физического смысла операция деления (нет абсолютного естественного нуля)?",
+        "options": [
+          "а) Шкала интервалов (шкала температур Цельсия/Фаренгейта, летоисчисление);",
+          "б) Шкала отношений (масса в кг, частота в Гц, абсолютная температура в Кельвинах);",
+          "в) Шкала порядка / рангов (баллы твердости Мооса, оценки экспертизы);",
+          "г) Шкала наименований / номинальная (номера каналов, маркировки транзисторов)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "В шкале интервалов фиксирован размер единицы, но ноль выбран условно (преобразование y = ax + b, a > 0). Отношение x_1/x_2 не инвариантно, но разность (x_1 - x_2) инвариантна."
+      },
+      {
+        "text": "Какое математическое преобразование является допустимым для «Шкалы отношений»?",
+        "options": [
+          "а) Преобразование подобия: y = a · x, где a > 0 (изменение масштаба единиц измерения);",
+          "б) Любое монотонно возрастающее преобразование y = f(x), сохраняющее порядок;",
+          "в) Линейное преобразование со сдвигом нуля: y = a · x + b;",
+          "г) Произвольная взаимно однозначная подстановка значений."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Шкала отношений имеет естественный неизменный абсолютный ноль, поэтому допустимо только умножение на положительную константу a > 0 (преобразование подобия)."
+      },
+      {
+        "text": "Какие характеристики определяют «Позитивный (прямой) показатель качества» в квалиметрии?",
+        "options": [
+          "а) Показатель, увеличение численного значения которого приводит к повышению уровня качества (например, пропускная способность, наработка на отказ, КПД);",
+          "б) Показатель, который всегда принимает строго положительные значения в любой системе единиц;",
+          "в) Показатель, измеренный с погрешностью менее 1%;",
+          "г) Показатель, определяемый исключительно органолептическим методом."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Позитивный ПК — увеличение P_i улучшает качество (q_i = P_i / P_i0). Негативный ПК — увеличение P_i ухудшает качество (q_i = P_i0 / P_i)."
+      },
+      {
+        "text": "Как вычисляется единичный относительный показатель качества q_i для «Негативного показателя» при дифференциальной оценке?",
+        "options": [
+          "а) q_i = P_i0 / P_i, где P_i0 — базовое (эталонное) значение, P_i — значение оцениваемого образца;",
+          "б) q_i = P_i / P_i0;",
+          "в) q_i = 1 - P_i0 / P_i;",
+          "г) q_i = √(P_i · P_i0)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Для негативных ПК (потери, уровень шума, энергопотребление, себестоимость) чем меньше P_i, тем выше q_i, поэтому q_i = P_i0 / P_i."
+      },
+      {
+        "text": "Что выбирается в качестве «Базового образца» при оценке конкурентоспособности серийно выпускаемой продукции?",
+        "options": [
+          "а) Реально существующий лучший отечественный или зарубежный аналог, доступный на целевом сегменте рынка;",
+          "б) Теоретически идеальный образец с предельными термодинамическими КПД;",
+          "в) Среднестатистическое изделие, снятое с производства 5 лет назад;",
+          "г) Перспективный образец, запланированный к разработке через 10 лет."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Для текущей оценки рыночной конкурентоспособности за базу принимается лучший реальный коммерческий аналог-конкурент на рынке."
+      },
+      {
+        "text": "В каком случае при оценке технического уровня продукции принимается «Перспективный базовый образец»?",
+        "options": [
+          "а) При долгосрочном прогнозировании и разработке технического задания на вновь создаваемую опережающую технику;",
+          "б) При проведении приемо-сдаточных испытаний серийной партии на заводе;",
+          "в) При сертификации единичного экземпляра таможенными органами;",
+          "г) При списании устаревшего парка оборудования."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Перспективный образец отражает прогнозируемый мировой уровень техники к моменту планируемого запуска изделия в серийное производство."
+      },
+      {
+        "text": "Какая математическая функция лежит в основе психофизической функции желательности Харрингтона d(y)?",
+        "options": [
+          "а) Двойная экспонента: d = \\exp(-\\exp(-y)), где y — кодированное безразмерное значение показателя;",
+          "б) Линейная нормировка: d = a · y + b;",
+          "в) Функция Гаусса: d = \\exp(-y² / 2);",
+          "г) Гиперболический тангенс: d = th(y)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Шкала Харрингтона использует логистическую кривую вида d = \\exp(-\\exp(-y)), преобразующую физические шкалы в интервал желательности [0, 1]."
+      },
+      {
+        "text": "Какие стандартные опорные точки соответствуют шкале желательности Харрингтона? (выберите все верные):",
+        "options": [
+          "а) 0.80 - 1.00 — отлично (очень хорошо);",
+          "б) 0.63 - 0.80 — хорошо;",
+          "в) 0.37 - 0.63 — удовлетворительно;",
+          "г) 0.20 - 0.37 — плохо;",
+          "д) 0.00 - 0.20 — очень плохо (неприемлемо)."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "explanation": "Это канонические интервалы Харрингтона с граничными квантилями d = 0.37 (1/e) и d = 0.63 (1 - 1/e)."
+      },
+      {
+        "text": "Какие ограничения накладываются на дифференциальный метод оценки качества продукции?",
+        "options": [
+          "а) Он не позволяет дать единую интегральную оценку, если часть относительных показателей q_i > 1, а часть q_i < 1;",
+          "б) Он применим только при наличии ровно двух единичных показателей;",
+          "в) Он требует обязательного использования квадратичных форм;",
+          "г) Он запрещен к использованию государственными стандартами."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Дифференциальный метод сопоставляет показатели по отдельности. Если одни q_i > 1, а другие q_i < 1, однозначный вердикт без комплексной свертки вынести невозможно."
+      },
+      {
+        "text": "Что такое «Предельно допустимое значение показателя качества» (P_pred)?",
+        "options": [
+          "а) Граничное значение показателя по стандарту или ТУ, при выходе за пределы которого продукция признается браком или не подлежит эксплуатации;",
+          "б) Среднее арифметическое значение по всем аналогам в мире;",
+          "в) Значение, зафиксированное при температуре абсолютного нуля;",
+          "г) Максимальная скорость работы процессора в режиме разгона."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Предельное значение — граница допустимой области пригодности изделия, нарушение которой переводит объект в критическое или бракованное состояние."
+      }
+    ]
+  },
+  "3": {
+    "title": "Билет 3: Экспертные методы квалиметрии и весомости показателей",
+    "description": "Экспертные процедуры, ранжирование, метод Фишберна, метод анализа иерархий Саати.",
+    "questions": [
+      {
+        "text": "В каком случае в квалиметрии целесообразно и необходимо применять экспертные методы оценки?",
+        "options": [
+          "а) Когда оцениваемые свойства не могут быть измерены прямыми физическими приборами (эргономика, эстетика) или отсутствует точная аналитическая модель;",
+          "б) Только при отсутствии финансовых средств на закупку контрольно-измерительных стендов;",
+          "в) Экспертные методы применяются исключительно при оценке продовольственных товаров органолептическим путем;",
+          "г) Когда число показателей качества превышает 100."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Экспертные методы необходимы для оценки неизмеримых прямыми приборами свойств (эстетических, эргономических, социальных), а также для определения весомостей."
+      },
+      {
+        "text": "Какова главная особенность метода «Ранжирования» при экспертной оценке n показателей качества?",
+        "options": [
+          "а) Эксперт упорядочивает все n показателей в порядке убывания их важности, присваивая наиболее важному ранг 1, а наименее важному — ранг n;",
+          "б) Эксперт выставляет каждому объекту оценку в баллах от 0 до 100 независимо от остальных;",
+          "в) Эксперт сравнивает показатели только попарно в квадратной матрице;",
+          "г) Эксперт ранжирует только четные показатели, пропуская нечетные."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "При классическом ранжировании по Кириллову наиболее значимый показатель получает ранг 1, а наименее значимый — ранг n (или наоборот при инверсной ранжировке)."
+      },
+      {
+        "text": "Как рассчитывается коэффициент весомости m_i для i-го показателя по «Правилу Фишберна» при строгом ранжировании P_1 ≻ P_2 ≻ ... ≻ P_n?",
+        "options": [
+          "а) m_i = 2·(n - i + 1) / [n·(n + 1)], где i — порядковый номер (ранг) показателя в цепочке предпочтений;",
+          "б) m_i = (1) / (n);",
+          "в) m_i = 2·i / [n·(n - 1)];",
+          "г) m_i = (n - i) / n²."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Формула Фишберна для строгого порядка убывания важности дает убывающую арифметическую прогрессию с нормировкой ∑ m_i = 1: m_i = 2(n - i + 1) / [n(n + 1)]."
+      },
+      {
+        "text": "В чем заключается суть «Метода Дельфи» при организации групповой экспертной оценки?",
+        "options": [
+          "а) Анонимный многотуровый опрос экспертов с предоставлением результатов предыдущих туров и обоснований крайних мнений для достижения сходимости оценок;",
+          "б) Открытая очная дискуссия экспертной комиссии с голосованием простым большинством голосов;",
+          "в) Назначение председателя комиссии, чье мнение является окончательным и решающим;",
+          "г) Случайный выбор одного эксперта из группы генератором псевдослучайных чисел."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Метод Дельфи устраняет психологическое давление авторитетов за счет анонимности, обратной связи по квантилям и аргументации отклонений в несколько туров."
+      },
+      {
+        "text": "Каким базовым свойством обладает обратно-симметричная матрица парных сравнений A = ||a_ij|| в «Методе анализа иерархий» Т. Саати?",
+        "options": [
+          "а) a_ij = (1) / (a_{ji)} для всех i, j, и a_ii = 1 на главной диагонали;",
+          "б) a_ij = -a_ji для всех i ≠ j;",
+          "в) a_ij + a_ji = 1;",
+          "г) Отношение элементов матрицы всегда равно нулю."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "В матрице Саати если объект i превосходит объект j в k раз (a_ij = k), то объект j уступает объекту i во столько же раз (a_ji = 1/k), а на диагонали a_ii = 1."
+      },
+      {
+        "text": "Какое предельное пороговое значение «Отношения согласованности» (ОС) матрицы парных сравнений считается допустимым в методе Саати?",
+        "options": [
+          "а) ОС ≤ 0.10 (10%);",
+          "б) ОС ≤ 0.50 (50%);",
+          "в) ОС = 1.00;",
+          "г) ОС ≥ 0.95."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Если ОС ≤ 0.10 (10%), уровень согласованности суждений эксперта признается приемлемым. При ОС > 0.10 эксперту рекомендуется пересмотреть свои суждения."
+      },
+      {
+        "text": "Как вычисляется «Индекс согласованности» (ИС) в методе анализа иерархий Саати для матрицы порядка n?",
+        "options": [
+          "а) ИС = (λ_max - n) / (n - 1), где λ_max — максимальное собственное значение матрицы парных сравнений;",
+          "б) ИС = λ_max / n;",
+          "в) ИС = √(λ_max - n);",
+          "г) ИС = (n - 1) / (λ_max + n)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Для идеально согласованной матрицы λ_max = n и ИС = 0. При отклонениях суждений λ_max > n, и ИС = (λ_max - n) / (n - 1)."
+      },
+      {
+        "text": "Какие условия должны выполняться для вектора коэффициентов весомости M = (m_1, m_2, ..., m_n) в квалиметрии? (выберите все верные):",
+        "options": [
+          "а) Условие неотрицательности: m_i ≥ 0 для всех i = 1, ..., n;",
+          "б) Условие нормировки: ∑(i=1..n) m_i = 1 (или 100%);",
+          "в) Каждый коэффициент весомости обязан быть строго целым числом;",
+          "г) Все весомости обязаны быть равны между собой (m_i = 1/n)."
+        ],
+        "correct": [
+          0,
+          1
+        ],
+        "explanation": "Коэффициенты весомости удовлетворяют условиям вероятностной нормировки: неотрицательность m_i ≥ 0 и сумма, равная единице ∑ m_i = 1."
+      },
+      {
+        "text": "Что представляет собой метод «Последовательного сравнения» (метод Черчмена-Акоффа) при определении весомостей?",
+        "options": [
+          "а) Процедуру корректировки начальных численных оценок путем сопоставления наиболее важного показателя с совокупным влиянием группы менее важных показателей;",
+          "б) Вычисление факториала от числа экспертов в комиссии;",
+          "в) Опрос экспертов строго по алфавитному порядку их фамилий;",
+          "г) Сравнение оцениваемого изделия только с продукцией конкурентов."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Метод Черчмена-Акоффа заключается в сопоставлении ценности самого важного свойства P_1 с суммой ценностей (P_2 + P_3 + ...) с последующей итеративной подгонкой весов."
+      },
+      {
+        "text": "Какой метод формирования экспертной группы позволяет объективно отобрать наиболее компетентных специалистов?",
+        "options": [
+          "а) Метод взаимной самооценки и взаимооценки компетентности (с расчетом коэффициентов аргументации и осведомленности);",
+          "б) Приглашение экспертов с наибольшим ростом и возрастом;",
+          "в) Выбор специалистов исключительно по критерию минимальной стоимости их консультации;",
+          "г) Случайный слепой отбор из телефонного справочника."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Компетентность эксперта оценивается коэффициентом k_комп = (k_осв + k_арг) / 2, отражающим уровень знаний и степень обоснованности суждений."
+      }
+    ]
+  },
+  "4": {
+    "title": "Билет 4: Статистическая оценка согласованности экспертов",
+    "description": "Коэффициент конкордации Кендалла, поправка на связанные ранги, Спирмен и критерий Пирсона.",
+    "questions": [
+      {
+        "text": "Какова математическая формула «Коэффициента конкордации Кендалла» W для m экспертов и n объектов при отсутствии связанных рангов?",
+        "options": [
+          "а) W = 12·S / [m²·(n³ - n)], где S = ∑(j=1..n) (R_j - R_ср)², а R_ср = m·(n + 1) / 2;",
+          "б) W = 6·S / [m·(n² - 1)];",
+          "в) W = 1 - 6·∑d_i² / [n·(n² - 1)];",
+          "г) W = (S) / (m · n)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Коэффициент конкордации Кендалла равен отношению фактической суммы квадратов отклонений сумм рангов S к ее теоретическому максимуму: W = 12S / [m²(n³ - n)]."
+      },
+      {
+        "text": "В каких пределах строго изменяется коэффициент конкордации Кендалла W и каков его содержательный смысл?",
+        "options": [
+          "а) 0 ≤ W ≤ 1; при W = 0 согласие полностью отсутствует (полный хаос), при W = 1 мнения всех экспертов абсолютно идентичны;",
+          "б) -1 ≤ W ≤ +1; при W = -1 эксперты высказывают противоположные мнения;",
+          "в) -∞ < W < +∞;",
+          "г) 0 ≤ W ≤ 100."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Коэффициент конкордации изменяется от 0 (полная несогласованность) до 1 (полное совпадение ранжировок всех m экспертов)."
+      },
+      {
+        "text": "Как вычисляется поправка на связанные (одинаковые) ранги T_i для i-го эксперта в формуле Кендалла?",
+        "options": [
+          "а) T_i = (1/12) · ∑(k=1..L_i) (t_k³ - t_k), где t_k — число одинаковых рангов в k-й группе связок;",
+          "б) T_i = ∑(k=1..L_i) (t_k² - 1);",
+          "в) T_i = (1) / (n) ∑ t_k;",
+          "г) T_i = 12 ∑ t_k³."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "При наличии одинаковых рангов у эксперта знаменатель формулы Кендалла уменьшается на величину m ∑ T_i, где T_i = (1) / (12) ∑ (t_k³ - t_k)."
+      },
+      {
+        "text": "Какова формула коэффициента конкордации Кендалла W при наличии связанных рангов?",
+        "options": [
+          "а) W = 12·S / [m²·(n³ - n) - m·∑T_i];",
+          "б) W = 12·S / [m²·(n³ - n) + m·∑T_i];",
+          "в) W = (12·S - ∑T_i) / (m²·n³);",
+          "г) W = (6 S) / (m² (n³ - n))."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Наличие связанных рангов уменьшает максимальную дисперсию, поэтому вычитается m ∑ T_i в знаменателе: W = 12S / [m²(n³ - n) - m ∑ T_i]."
+      },
+      {
+        "text": "С помощью какого статистического критерия проверяется значимость (неслучайность) коэффициента конкордации Кендалла при n > 7?",
+        "options": [
+          "а) По критерию согласия Пирсона Хи-квадрат: χ²_расч = m (n - 1) W с числом степеней свободы ν = n - 1;",
+          "б) По t-критерию Стьюдента с ν = n - 2 степенями свободы;",
+          "в) По критерию знаков Вилкоксона;",
+          "г) По F-критерию Фишера."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "При n > 7 величина χ² = m(n-1)W подчиняется χ²-распределению с ν = n - 1 степенями свободы."
+      },
+      {
+        "text": "При каком условии нулевая гипотеза H_0 о случайности совпадения мнений экспертов ОТВЕРГАЕТСЯ (согласованность признается статистически значимой)?",
+        "options": [
+          "а) Когда χ²_расч > χ²_табл(α, ν) для заданного уровня значимости α;",
+          "б) Когда χ²_расч < χ²_табл(α, ν);",
+          "в) Когда χ²_расч = 0;",
+          "г) Когда уровень значимости α > 0.99."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Если расчетное значение χ² превышает критическое табличное χ²_табл(α, n - 1), случайный характер согласованности отвергается: мнения экспертов согласованы неслучайно."
+      },
+      {
+        "text": "Какова формула коэффициента ранговой корреляции Спирмена R_s для сравнения мнений ДВУХ экспертов (m = 2)?",
+        "options": [
+          "а) R_s = 1 - 6·∑(i=1..n) d_i² / [n·(n² - 1)], где d_i = R_1i - R_2i — разность рангов i-го объекта;",
+          "б) R_s = (12 ∑ d_i²) / (n³ - n);",
+          "в) R_s = 1 - (∑ d_i) / (n²);",
+          "г) R_s = (2 ∑ d_i²) / (n(n - 1))."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Коэффициент ранговой корреляции Спирмена R_s = 1 - 6 ∑ d_i² / [n(n² - 1)] оценивает парную корреляцию рангов двух экспертов от -1 до +1."
+      },
+      {
+        "text": "Какое значение принимает коэффициент ранговой корреляции Спирмена R_s, если ранжировки двух экспертов диаметрально противоположны?",
+        "options": [
+          "а) Строго -1.00;",
+          "б) Строго 0.00;",
+          "в) Строго +1.00;",
+          "г) -∞."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "При полной инверсии ранжировок (1, 2, 3... vs n, n-1, n-2...) разности d_i максимальны, и R_s = -1."
+      },
+      {
+        "text": "Что следует предпринять организаторам экспертизы, если расчетное значение коэффициента конкордации W < 0.30 и гипотеза согласованности не подтвердилась?",
+        "options": [
+          "а) Разбить экспертов на согласованные кластеры/подгруппы методом кластерного анализа, либо провести дополнительный тур опроса с обсуждением расхождений;",
+          "б) Принудительно усреднить все ранги и считать экспертизу успешной;",
+          "в) Уволить всех экспертов без права повторной экспертизы;",
+          "г) Заменить все ранги случайными числами."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Низкое значение W указывает на неоднородность мнений. Требуется анализ поляризации мнений (кластеризация) либо проведение дополнительного тура по Дельфи."
+      },
+      {
+        "text": "Чему равна средняя сумма рангов R_ср по всем n объектам, присвоенная m экспертами?",
+        "options": [
+          "а) R_ср = m·(n + 1) / 2;",
+          "б) R_ср = n·(m + 1) / 2;",
+          "в) R_ср = m · n;",
+          "г) R_ср = (m + n) / 2."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Поскольку сумма рангов одного эксперта равна n(n+1)/2, для m экспертов средняя сумма рангов одного объекта равна R_ср = m(n+1)/2."
+      }
+    ]
+  },
+  "5": {
+    "title": "Билет 5: Математические модели комплексной оценки уровня качества",
+    "description": "Аддитивная, мультипликативная модели, минимакс и обобщенные средние Колмогорова.",
+    "questions": [
+      {
+        "text": "Какова математическая формула «Аддитивной модели» комплексного показателя качества K_адд?",
+        "options": [
+          "а) K_адд = ∑(i=1..n) m_i · q_i, где ∑ m_i = 1, q_i — относительная оценка i-го показателя;",
+          "б) K_адд = ∏(i=1..n) q_i^(m_i);",
+          "в) K_адд = min_{1 ≤ i ≤ n} (q_i / m_i);",
+          "г) K_адд = √(∑ m_i q_i²)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Аддитивная модель представляет собой взвешенную сумму относительных показателей: K = ∑(i=1..n) m_i · q_i."
+      },
+      {
+        "text": "Какое главное допущение (аксиома) лежит в основе применения «Аддитивной модели» качества?",
+        "options": [
+          "а) Взаимная компенсация и независимость единичных показателей по предпочтению (высокое значение одного свойства может скомпенсировать низкое значение другого);",
+          "б) Строгая недопустимость нулевых значений хотя бы одного показателя;",
+          "в) Обязательная экспоненциальная зависимость между показателями;",
+          "г) Полное отсутствие весомостей показателей."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Аддитивная модель предполагает принцип компенсации: низкая оценка одного свойства может быть полностью скомпенсирована высокой оценкой другого."
+      },
+      {
+        "text": "Какова математическая формула «Мультипликативной модели» комплексного показателя качества K_мульт?",
+        "options": [
+          "а) K_мульт = ∏(i=1..n) q_i^(m_i), где m_i — весомость i-го показателя (при ∑ m_i = 1);",
+          "б) K_мульт = ∑(i=1) ^n m_i \\ln q_i;",
+          "в) K_мульт = ∏(i=1) ^n (m_i + q_i);",
+          "г) K_мульт = (∏ q_i) / (∑ m_i)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Мультипликативная модель качества вычисляется как взвешенное геометрическое среднее: K = ∏(i=1..n) q_i^(m_i)."
+      },
+      {
+        "text": "Что произойдет со значением комплексного показателя K_мульт в мультипликативной модели, если хотя бы один единичный показатель q_k = 0 (при m_k > 0)?",
+        "options": [
+          "а) Комплексный показатель K_мульт строго обратится в ноль (K = 0), независимо от величины всех остальных показателей (принцип лимитирующего звена);",
+          "б) Комплексный показатель уменьшится ровно на величину m_k;",
+          "в) Значение K станет равным единице;",
+          "г) Формула автоматически переключится на аддитивную модель."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "В мультипликативной модели нулевой уровень критического свойства делает весь комплексный уровень качества равным нулю (0^{m_k} = 0)."
+      },
+      {
+        "text": "Какова формула «Минимаксной (пессимистической) модели» комплексной оценки качества K_min?",
+        "options": [
+          "а) K_min = min_{1 ≤ i ≤ n} (q_i) (оценка по наихудшему единичному показателю);",
+          "б) K_min = max_{1 ≤ i ≤ n} (q_i);",
+          "в) K_min = (1/n) · ∑ q_i;",
+          "г) K_min = min (m_i) · max (q_i)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Минимаксная модель определяет качество всей сложной системы по ее самому слабому звену: K = min(q_1, q_2, ..., q_n)."
+      },
+      {
+        "text": "Какова геометрическая интерпретация аддитивной математической модели уровня качества в n-мерном пространстве единичных показателей?",
+        "options": [
+          "а) Гиперплоскость равного комплексного качества ∑ m_i q_i = const;",
+          "б) n-мерная гиперсфера;",
+          "в) Гиперболический конус;",
+          "г) Параболический цилиндр."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Линейное уравнение ∑ m_i q_i = C задает семейство параллельных гиперплоскостей одинакового комплексного уровня качества в R^n."
+      },
+      {
+        "text": "Какова формула «Обобщенного среднего степенного показателя качества по Колмогорову» порядка p?",
+        "options": [
+          "а) K(p) = ≤ft( ∑(i=1..n) m_i · q_i^p \\right)^{1/p};",
+          "б) K(p) = ∑(i=1) ^n (m_i q_i)^p;",
+          "в) K(p) = p √(∑ m_i q_i);",
+          "г) K(p) = (∑ q_i^p) / (p ∑ m_i)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Степенное среднее Колмогорова объединяет гармоническое (p=-1), геометрическое (p → 0), арифметическое (p=1) и квадратичное (p=2) средние."
+      },
+      {
+        "text": "В каких случаях для оценки технического уровня предпочтительнее использовать мультипликативную модель вместо аддитивной?",
+        "options": [
+          "а) Когда оценивается сложная система с последовательным соединением подсистем, где отказ или нулевая эффективность любого узла приводит к полному отказу всей системы;",
+          "б) Когда все единичные показатели измерены в миллиметрах;",
+          "в) Когда весомости всех показателей строго равны между собой;",
+          "г) Когда требуется максимальная скорость вычислений на калькуляторе."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Мультипликативная модель адекватно отражает системы высокой надежности и функциональной зависимости, где недопустим компромисс по критическим параметрам."
+      },
+      {
+        "text": "Что такое «Смешанный метод» оценки уровня качества продукции?",
+        "options": [
+          "а) Метод, при котором часть единичных показателей объединяется в локальные комплексные группы (например, надежность, эргономика), а затем обобщается дифференциальным или аддитивным методом;",
+          "б) Метод, сочетающий измерения на стенде с опросом прохожих на улице;",
+          "в) Метод случайного чередования физических и балльных шкал;",
+          "г) Оценка качества химических смесей и растворов."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Смешанный метод применяется при большой номенклатуре единичных ПК: сначала вычисляются комплексные оценки групп свойств, затем — обобщенная оценка."
+      },
+      {
+        "text": "Какое свойство аддитивной модели называется «Квазиоднородностью»?",
+        "options": [
+          "а) Если все единичные показатели q_i увеличить в λ раз, то комплексный показатель K также увеличится ровно в λ раз: K(λ q_1, ..., λ q_n) = λ K(q_1, ..., q_n);",
+          "б) Показатель K не зависит от выбора базового образца;",
+          "в) Производная от K по времени равна константе;",
+          "г) Значение K всегда лежит строго в интервале [0, 1]."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Линейная однородность первой степени обеспечивает масштабную инвариантность комплексной оценки качества."
+      }
+    ]
+  },
+  "6": {
+    "title": "Билет 6: Корреляционно-регрессионный анализ в квалиметрии",
+    "description": "МНК, линейная регрессия, коэффициент детерминации, критерии Фишера и Стьюдента.",
+    "questions": [
+      {
+        "text": "В чем заключается математический принцип «Метода наименьших квадратов» (МНК) при построении линейной регрессионной модели y = ax + b?",
+        "options": [
+          "а) Минимизация суммы квадратов отклонений эмпирических значений зависимой переменной от расчетных теоретических: ∑(i=1..n) [y_i - (a·x_i + b)]² → min;",
+          "б) Максимизация суммы абсолютных значений разностей: ∑ |y_i - y_теор_i| → max;",
+          "в) Приравнивание среднего арифметического квадратов к единице: (1) / (n) ∑ y_i² = 1;",
+          "г) Минимизация дисперсии независимой переменной x."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "МНК находит коэффициенты a и b, при которых сумма квадратов невязок (остатков) минимальна: S = ∑ (y_i - y_теор_i)² → min."
+      },
+      {
+        "text": "Что в регрессионном анализе показывает «Коэффициент детерминации» R² (0 ≤ R² ≤ 1)?",
+        "options": [
+          "а) Долю дисперсии зависимой переменной y, объясняемую построенным регрессионным уравнением от факторов x;",
+          "б) Точную величину систематической погрешности измерительного прибора;",
+          "в) Вероятность безотказной работы изделия в течение гарантийного срока;",
+          "г) Отношение стоимости испытаний к себестоимости образца."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Коэффициент детерминации R² = S²_регр / S²_общ показывает, какая часть общей вариации зависимой переменной y обусловлена включенными в модель факторами x."
+      },
+      {
+        "text": "С помощью какого статистического критерия проверяется общая статистическая адекватность (значимость) построенного уравнения регрессии?",
+        "options": [
+          "а) F-критерия Фишера: F = S²_факт / S²_ост = [R²/k] / [(1 - R²)/(n - k - 1)], где k — число факторов модели;",
+          "б) Критерия Дарбина-Уотсона для выявления гетероскедастичности;",
+          "в) Критерия Манна-Уитни для двух независимых выборок;",
+          "г) Критерия знаков Вилкоксона."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Значимость регрессионной модели в целом проверяется по F-критерию Фишера путем сравнения факториальной дисперсии с остаточной."
+      },
+      {
+        "text": "При каком условии по F-критерию Фишера построенное регрессионное уравнение признается статистически АДЕКВАТНЫМ с надежностью P = 1 - α?",
+        "options": [
+          "а) Когда расчетное значение F_расч > F_табл(α, ν_1, ν_2), где ν_1 = k, ν_2 = n - k - 1;",
+          "б) Когда расчетное значение F_расч < F_табл(α, ν_1, ν_2);",
+          "в) Когда F_расч = 0;",
+          "г) Когда F_расч = 1 - R²."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Если F_расч > F_табл, то гипотеза о равенстве нулю коэффициента детерминации отвергается, и регрессионная зависимость признается статистически значимой."
+      },
+      {
+        "text": "С помощью какого критерия проверяется статистическая значимость ОТДЕЛЬНЫХ коэффициентов линейной регрессии a и b?",
+        "options": [
+          "а) t-критерия Стьюдента: t_расч = |a| / S_a с числом степеней свободы ν = n - 2;",
+          "б) χ²-критерия Пирсона с ν = n - 1;",
+          "в) Z-критерия Колмогорова-Смирнова;",
+          "г) Критерия Бартлетта."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Значимость каждого отдельного коэффициента регрессии проверяется t-критерием Стьюдента t_a = |a| / S_a при условии t_расч > t_табл(α, n-2)."
+      },
+      {
+        "text": "Какое значение принимает выборочный линейный коэффициент корреляции Пирсона r_xy, если между переменными x и y существует строгая функциональная обратная линейная зависимость (y = -kx + b, k > 0)?",
+        "options": [
+          "а) Строго r_xy = -1.00;",
+          "б) Строго r_xy = 0.00;",
+          "в) Строго r_xy = +1.00;",
+          "г) r_xy = -∞."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "При полной функциональной отрицательной линейной связи r_xy = -1, при положительной r_xy = +1, при отсутствии линейной связи r_xy = 0."
+      },
+      {
+        "text": "Каковы степени свободы ν_1 и ν_2 для F-критерия Фишера при парной линейной регрессии (k = 1 фактор) по n экспериментальным точкам?",
+        "options": [
+          "а) ν_1 = 1, ν_2 = n - 2;",
+          "б) ν_1 = n - 1, ν_2 = 1;",
+          "в) ν_1 = 2, ν_2 = n - 1;",
+          "г) ν_1 = n, ν_2 = n."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Для парной линейной регрессии (y = ax + b): число объясняющих переменных k=1, поэтому ν_1 = 1, а для остаточной дисперсии ν_2 = n - 1 - 1 = n - 2."
+      },
+      {
+        "text": "Что характеризует явление «Мультиколлинеарности» в многофакторном регрессионном анализе уровня качества?",
+        "options": [
+          "а) Наличие сильной линейной корреляционной зависимости между самими независимыми факторами x_i и x_j, приводящей к неустойчивости оценок коэффициентов;",
+          "б) Равенство нулю дисперсии зависимой переменной y;",
+          "в) Нелинейный характер связи между входом и выходом модели;",
+          "г) Наличие случайных выбросов в измерительном канале."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Мультиколлинеарность — высокая взаимная корреляция между независимыми переменными (|r_{x_i x_j}| > 0.7-0.8), искажающая оценки параметров регрессии."
+      },
+      {
+        "text": "Какая математическая модель связывает относительный прирост качества с относительным приростом затрат в производственной функции Кобба-Дугласа?",
+        "options": [
+          "а) Степенная мультипликативная модель: Y = A · X_1^{α} · X_2^{β};",
+          "б) Линейная полиномиальная модель: Y = a_0 + a_1 X_1 + a_2 X_2;",
+          "в) Дробно-рациональная модель: Y = (a X_1) / (b X_2);",
+          "г) Тригонометрическая модель: Y = A \\sin(ω X_1)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Функция Кобба-Дугласа — степенная производственная функция Y = A X_1^{α} X_2^{β}, линеаризуемая логарифмированием \\ln Y = \\ln A + α \\ln X_1 + β \\ln X_2."
+      },
+      {
+        "text": "В каком случае оценка параметров регрессии по МНК является несмещенной, эффективной и состоятельной (теорема Гаусса-Маркова)?",
+        "options": [
+          "а) Математическое ожидание остатков равно нулю E(ε_i) = 0, остатки гомоскедастичны Var(ε_i) = σ² и некоррелированы между собой Cov(ε_i, ε_j) = 0;",
+          "б) Все переменные x_i являются целыми неотрицательными числами;",
+          "в) Число наблюдений n в точности равно числу параметров k;",
+          "г) Коэффициент детерминации строго равен 1."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Условия Гаусса-Маркова гарантируют наилучшие линейные несмещенные оценки (BLUE): нулевое матожидание ошибок, постоянство дисперсии и отсутствие автокорреляции."
+      }
+    ]
+  },
+  "7": {
+    "title": "Билет 7: Многокритериальная оптимизация и проектная квалиметрия",
+    "description": "Парето-оптимальность, идеальная точка, метод уступок и свертка критериев.",
+    "questions": [
+      {
+        "text": "Каково строгое определение «Парето-оптимального (недоминируемого) решения» в многокритериальной проектной квалиметрии?",
+        "options": [
+          "а) Решение, для которого невозможно улучшить значение ни одного из частных критериев качества без одновременного ухудшения хотя бы одного другого критерия;",
+          "б) Решение, обеспечивающее строго максимальные значения абсолютно по всем частным критериям одновременно;",
+          "в) Решение с наименьшей рыночной стоимостью среди всех предложенных;",
+          "г) Решение, выбранное простым большинством голосов экспертной комиссии."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Альтернатива X* оптимальна по Парето, если не существует допустимого X, такого что f_k(X) ≥ f_k(X*) для всех k и хотя бы для одного f_j(X) > f_j(X*)."
+      },
+      {
+        "text": "Что представляет собой «Фронт Парето» в двухкритериальной задаче проектирования (f_1 → max, f_2 → max)?",
+        "options": [
+          "а) Геометрическое множество всех недоминируемых точек на границе области допустимых решений в пространстве критериев;",
+          "б) Прямую линию, соединяющую начало координат с точкой оптимума;",
+          "в) Окружность единичного радиуса в нормированном пространстве;",
+          "г) Множество всех внутренних точек с наихудшими характеристиками."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Фронт Парето — компромиссная граница области достижимости в пространстве критериев, разделяющая реализуемые и недостижимые целевые векторы."
+      },
+      {
+        "text": "В чем заключается суть «Метода идеальной точки» (метод утопии) в проектной квалиметрии?",
+        "options": [
+          "а) Находится теоретически наилучший (но недостижимый) вектор F* = (f_1^*, f_2^*, ..., f_m^*), и выбирается допустимое решение, минимизирующее расстояние до идеала: ρ(F(X), F*) → min;",
+          "б) Выбирается проектное решение, наиболее близкое к началу координат (0, 0, ..., 0);",
+          "в) Проектировщик выбирает решение с идеальной геометрической симметрией корпуса;",
+          "г) Решение ищется путем случайного блуждания вокруг средней точки."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Метод идеальной точки минимизирует метрику расстояния (Евклидову L_2, Манхэттенскую L_1 или Чебышева L_∞) от проектного вектора до вектора целей F*."
+      },
+      {
+        "text": "Какова формула нормированного Евклидова расстояния до идеальной точки F* = (1, 1, ..., 1) при весомостях m_i?",
+        "options": [
+          "а) ρ(X, F*) = √(∑(i=1) ^n m_i (1 - q_i(X))²) → min;",
+          "б) ρ(X, F*) = ∑(i=1) ^n m_i (1 - q_i(X));",
+          "в) ρ(X, F*) = max_i |1 - q_i(X)|;",
+          "г) ρ(X, F*) = ∏(i=1..n) (1 - q_i(X))^(m_i)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Взвешенное евклидово расстояние L_2 до идеала рассчитывается по формуле корня из суммы взвешенных квадратов невязок: √(∑ m_i (1 - q_i)²)."
+      },
+      {
+        "text": "В чем заключается процедура «Метода последовательных уступок» при многокритериальной оптимизации?",
+        "options": [
+          "а) Критерии ранжируются по важности; на каждом шаге оптимизируется очередной критерий с допущением уступки (ухудшения) по предыдущим более важным критериям на величину не более Δ_k;",
+          "б) Все критерии оптимизируются независимо друг от друга в случайном порядке;",
+          "в) Разработчики уступают заказчику 10% бюджета проекта на каждом этапе согласования;",
+          "г) Отбрасываются все критерии, кроме самого дешевого."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Метод последовательных уступок итеративно сужает допустимую область, разрешая ЛПР поступиться долей эффективности главного критерия Δ_1 ради улучшения остальных."
+      },
+      {
+        "text": "В чем состоит метод «Главного критерия с ограничениями»?",
+        "options": [
+          "а) Выделяется один наиболее важный целевой критерий для максимизации/минимизации (f_1(X) → extr), а на все остальные частные критерии накладываются жесткие нормативные ограничения (f_j(X) ≥ b_j);",
+          "б) Все критерии объединяются в одну сумму с равными весами;",
+          "в) Решение принимается исключительно по критерию минимального веса конструкции;",
+          "г) Главным критерием объявляется скорость рендеринга 3D-графики."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Метод переводит (m - 1) критериев в разряд ограничений f_j(X) ≥ b_j, оставляя одну главную целевую функцию f_1(X) → max."
+      },
+      {
+        "text": "Каким свойством обладает решение, полученное методом линейной свертки критериев F(X) = ∑(i=1) ^m \u0007lpha_i f_i(X) при \u0007lpha_i > 0, ∑ \u0007lpha_i = 1?",
+        "options": [
+          "а) Полученное оптимальное решение гарантированно принадлежит Парето-оптимальному множеству;",
+          "б) Решение всегда лежит строго вне области допустимых решений;",
+          "в) Решение всегда совпадает с началом координат;",
+          "г) Линейная свертка никогда не дает оптимального по Парето решения."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Максимизация строго положительной взвешенной суммы частных критериев всегда порождает Парето-эффективную (недоминируемую) точку."
+      },
+      {
+        "text": "Что в теории многокритериальной оптимизации понимается под «Точкой Надира» (F_надир)?",
+        "options": [
+          "а) Вектор, составленный из наихудших значений каждого частного критерия на всем Парето-оптимальном множестве;",
+          "б) Точка глобального абсолютного максимума целевой функции;",
+          "в) Центр тяжести области допустимых решений;",
+          "г) Начало координат декартовой системы."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Точка Надира (антиидеал) определяет нижнюю границу эффективного фронта Парето: f_i^{nad} = min_{X ∈ Pareto} f_i(X)."
+      },
+      {
+        "text": "В каком случае свертка критериев методом Чебышева (L_∞) предпочтительнее линейной свертки?",
+        "options": [
+          "а) Когда область Парето является невыпуклой и требуется найти точки во впадинах фронта, недостижимые линейной гиперплоскостью;",
+          "б) Только при решении задач с одним критерием;",
+          "в) Когда все критерии измеряются в логарифмических шкалах;",
+          "г) Когда все весовые коэффициенты равны нулю."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Минимаксная свертка Чебышева min_X max_i [m_i (f_i^* - f_i(X))] способна аппроксимировать любые точки на невыпуклых фронтах Парето."
+      },
+      {
+        "text": "Какие из перечисленных задач проектной квалиметрии относятся к классу векторной оптимизации? (выберите все верные):",
+        "options": [
+          "а) Одновременная максимизация пропускной способности сети связи и минимизация суммарных капитальных затрат;",
+          "б) Максимизация надежности радиоэлектронного блока при одновременной минимизации его массы и энергопотребления;",
+          "в) Нахождение корня квадратного из числа 144 на микрокалькуляторе;",
+          "г) Сортировка массива фамилий студентов по алфавиту."
+        ],
+        "correct": [
+          0,
+          1
+        ],
+        "explanation": "Векторная оптимизация решает задачи нахождения наилучшего компромисса между несколькими противоречивыми критериями качества (эффективность vs затраты)."
+      }
+    ]
+  },
+  "8": {
+    "title": "Билет 8: Принятие решений в условиях риска и неопределенности",
+    "description": "Критерии Вальда, Сэвиджа, Гурвица, Лапласа, Байеса и матричные игры с природой.",
+    "questions": [
+      {
+        "text": "Какова математическая целевая функция «Критерия Вальда (максимина)» для матрицы выигрышей A = ||a_ij||?",
+        "options": [
+          "а) W = max_i min_j (a_ij) (максимизация гарантированного минимального выигрыша);",
+          "б) W = min_i max_j (a_ij);",
+          "в) W = max_i max_j (a_ij);",
+          "г) W = (1/n) · ∑_j a_ij."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Критерий Вальда — позиция крайнего пессимизма (осторожности): лицо, принимающее решения (ЛПР), рассчитывает на наихудшее поведение среды и выбирает max_i min_j (a_ij)."
+      },
+      {
+        "text": "Как формируется матрица рисков (сожалений/потерь) B = ||b_ij|| для применения «Критерия Сэвиджа»?",
+        "options": [
+          "а) Элементы матрицы вычисляются как разность максимального элемента в данном столбце и текущего элемента: b_ij = max_k (a_kj) - a_ij;",
+          "б) Элементы вычисляются как разность текущего элемента и минимального в строке: b_ij = a_ij - min_k (a_ik);",
+          "в) Матрица B равна транспонированной матрице A^T;",
+          "г) Элементы делятся на сумму элементов соответствующей строки."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Сожаление b_ij — это упущенная выгода, если бы ЛПР знало истинное состояние природы j: b_ij = max_k (a_kj) - a_ij."
+      },
+      {
+        "text": "Какова оптимизационная формула «Критерия Сэвиджа» по построенной матрице рисков B = ||b_ij||?",
+        "options": [
+          "а) S = min_i max_j (b_ij) (минимизация максимального риска / минимакс сожалений);",
+          "б) S = max_i min_j b_ij;",
+          "в) S = max_i max_j b_ij;",
+          "г) S = ∑(i) ∑(j) b_ij."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Критерий Сэвиджа минимизирует максимальное возможное сожаление ЛПР: min_i max_j (b_ij)."
+      },
+      {
+        "text": "Какова формула «Критерия Гурвица» (критерия пессимизма-оптимизма) при коэффициенте оптимизма λ ∈ [0, 1]?",
+        "options": [
+          "а) e_i = λ max_j (a_ij) + (1 - λ) min_j (a_ij) → max_i;",
+          "б) e_i = λ ∑(j) a_ij + (1 - λ) ∏(j) a_ij;",
+          "в) e_i = max_j(a_ij) / [λ · min_j(a_ij)];",
+          "г) e_i = (1 - λ) max_j (a_ij) - λ min_j (a_ij)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Критерий Гурвица взвешивает наилучший и наихудший исходы с помощью веса оптимизма λ: e_i = λ max a_ij + (1-λ) min a_ij → max."
+      },
+      {
+        "text": "Какому критерию строго эквивалентен критерий Гурвица при крайнем значении λ = 0?",
+        "options": [
+          "а) Критерию крайнего пессимизма Вальда (максимину max_i min_j (a_ij));",
+          "б) Критерию крайнего оптимизма (максимаксу max_i max_j (a_ij));",
+          "в) Критерию Лапласа равновероятности;",
+          "г) Критерию Сэвиджа."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "При λ = 0 формула дает e_i = 0 · max + 1 · min a_ij = min_j (a_ij) → max_i, что в точности является критерием Вальда."
+      },
+      {
+        "text": "Какому критерию строго эквивалентен критерий Гурвица при крайнем значении λ = 1?",
+        "options": [
+          "а) Критерию крайнего оптимизма (максимаксу max_i max_j (a_ij));",
+          "б) Критерию крайнего пессимизма Вальда;",
+          "в) Критерию Сэвиджа;",
+          "г) Критерию Байеса."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "При λ = 1 формула дает e_i = 1 · max a_ij + 0 = max_j (a_ij) → max_i (критерий максимакса — ставка на максимальный выигрыш)."
+      },
+      {
+        "text": "В чем заключается гипотеза «Критерия Лапласа (равновероятности)» в условиях полной неопределенности?",
+        "options": [
+          "а) Все n состояний внешней среды считаются равновероятными (p_j = 1/n), и выбирается стратегия с максимальным средним арифметическим выигрышем: max_i (1/n) · ∑(j=1..n) a_ij;",
+          "б) Вероятности состояний считаются распределенными по закону Пуассона;",
+          "в) Вероятность наихудшего состояния принимается равной 1;",
+          "г) Все состояния природы исключаются из рассмотрения."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Критерий Лапласа опирается на принцип недостаточного основания: если вероятности неизвестны, они принимаются равными 1/n."
+      },
+      {
+        "text": "Какова формула «Критерия Байеса-Лапласа» при принятии решений в условиях РИСКА (когда вероятности состояний природы p_j точно известны, ∑ p_j = 1)?",
+        "options": [
+          "а) B = max_i ∑(j=1..n) p_j · a_ij (максимизация математического ожидания выигрыша);",
+          "б) B = min_i ∑(j=1..n) p_j · a_ij;",
+          "в) B = max_i ∏(j=1..n) a_ij^(p_j);",
+          "г) B = ∑(j=1..n) p_j² · a_ij."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Критерий Байеса максимизирует средний ожидаемый выигрыш с учетом вероятностного распределения внешних факторов p_j."
+      },
+      {
+        "text": "В чем главное отличие ситуации «Риска» от ситуации «Полной неопределенности» в теории системного анализа?",
+        "options": [
+          "а) При риске известны вероятности наступления различных состояний среды (p_j), а при неопределенности вероятности неизвестны или не имеют объективного смысла;",
+          "б) При риске матрица последствий состоит только из отрицательных чисел;",
+          "в) Неопределенность возникает только при наличии более 1000 экспертов;",
+          "г) Риск относится только к финансовым инвестициям, а неопределенность — только к физическим законам."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Риск характеризуется вероятностной определенностью исходов P(S_j), а неопределенность — полным отсутствием информации о законе распределения состояний среды."
+      },
+      {
+        "text": "Какая стратегия называется «Доминируемой» в матрице решений A = ||a_ij||?",
+        "options": [
+          "а) Стратегия i_1, для которой существует другая стратегия i_2, дающая не меньший выигрыш при любых состояниях природы (a_{i_2 j} ≥ a_{i_1 j} для всех j) и строго больший хотя бы при одном;",
+          "б) Стратегия с максимальным значением суммы элементов строки;",
+          "в) Стратегия, выбранная случайным образом;",
+          "г) Стратегия, находящаяся на главной диагонали матрицы."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Доминируемая стратегия заведомо уступает доминирующей при любых исходах природы и может быть безоговорочно исключена из матрицы решений."
+      }
+    ]
+  },
+  "9": {
+    "title": "Билет 9: Математическое программирование, симплекс-метод и теневые цены",
+    "description": "Каноническая форма ЛП, условия линейности, теневые цены ресурсов и двойственность (Лаб. 4 ч. 2).",
+    "questions": [
+      {
+        "text": "В чем состоит принципиальное различие между «Структурной» и «Параметрической» оптимизацией проектных решений (В. И. Кириллов, Лаб. практикум, Ч. 2)?",
+        "options": [
+          "а) Структурная оптимизация определяет оптимальный состав и топологию связей элементов системы из дискретного набора вариантов, а параметрическая — наилучшие численные значения варьируемых параметров при заданной структуре;",
+          "б) Структурная оптимизация выполняется вручную на чертежах, а параметрическая — исключительно на суперкомпьютерах;",
+          "в) Параметрическая оптимизация выполняется до составления технического задания, а структурная — после утилизации изделия;",
+          "г) Между ними нет различий: это взаимозаменяемые синонимы."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Структурная оптимизация выбирает топологическую схему/состав системы (дискретная задача), а параметрическая — численные параметры X внутри выбранной структуры."
+      },
+      {
+        "text": "Какие переменные в модели оптимизации проектного решения называются «Управляемыми», а какие — «Неуправляемыми»?",
+        "options": [
+          "а) Управляемые — параметры, значения которых разработчик может свободно варьировать в процессе оптимизации (x_1, ..., x_n); неуправляемые — заданные извне константы, нормы расхода, цены и запасы ресурсов (c_j, a_ij, b_i);",
+          "б) Управляемые — параметры, передаваемые по кабелю, неуправляемые — передаваемые по радиоканалу;",
+          "в) Управляемые — только целочисленные переменные, неуправляемые — дробные;",
+          "г) Неуправляемые параметры вообще отсутствуют в математической модели."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Варьируемые (управляемые) переменные X = (x_1, ..., x_n) подлежат оптимизации разработчиком. Неуправляемые экзогенные факторы задаются внешней средой и ТЗ."
+      },
+      {
+        "text": "Что представляет собой «Теневая цена (теневая стоимость / shadow price)» j-го ресурса в задачах линейного программирования?",
+        "options": [
+          "а) Предельную величину приращения целевой функции ΔF / ΔP_j при увеличении запаса данного ресурса на единицу при неизменности остальных факторов;",
+          "б) Закупочную стоимость нелегального сырья на теневом рынке;",
+          "в) Амортизационные отчисления за простой оборудования;",
+          "г) Себестоимость вторичной переработки производственных отходов."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Теневая цена ресурса y_j = ΔF / ΔP_j показывает прирост прибыли/эффективности при расширении узкого места (лимитирующего ресурса) на одну единицу."
+      },
+      {
+        "text": "Чему строго равна теневая цена ресурса, который в оптимальном проектном плане израсходован НЕ полностью (недефицитный / избыточный ресурс)?",
+        "options": [
+          "а) Строго равна 0 (поскольку дополнительное увеличение избыточного ресурса не изменит значение целевой функции);",
+          "б) Строго равна 1;",
+          "в) Равна -∞;",
+          "г) Равна удвоенной оптовой цене ресурса."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Согласно теореме о дополняющей нежесткости, если в оптимальном плане ресурс недоиспользован (имеется остаток), его теневая цена равна 0 (y_j = 0)."
+      },
+      {
+        "text": "Какие 4 фундаментальных условия (гипотезы) лежат в основе задач Линейного Программирования (ЛП)? (выберите все верные):",
+        "options": [
+          "а) Пропорциональность (вклад переменной в целевую функцию и расход ресурсов строго пропорционален ее значению);",
+          "б) Аддитивность (суммарный эффект от нескольких видов деятельности равен сумме индивидуальных эффектов);",
+          "в) Делимость / непрерывность (управляемые переменные могут принимать любые неотрицательные вещественные значения);",
+          "г) Определенность / детерминированность (все коэффициенты модели c_j, a_ij, b_i точно известны);",
+          "д) Обязательное наличие синусоидальных колебаний."
+        ],
+        "correct": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Четыре базовых постулата классического ЛП: пропорциональность, аддитивность, делимость (непрерывность) и детерминированность параметров."
+      },
+      {
+        "text": "Что представляет собой «Каноническая форма» задачи линейного программирования?",
+        "options": [
+          "а) Максимизация линейной целевой функции F(X) = ∑ c_j · x_j → max при ограничениях строго в виде равенств ∑ a_ij · x_j = b_i и условии неотрицательности x_j ≥ 0;",
+          "б) Минимизация функции при отсутствии каких-либо ограничений;",
+          "в) Задача оптимизации с нелинейными квадратичными ограничениями;",
+          "г) Система дифференциальных уравнений второго порядка."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Каноническая форма ЛП требует, чтобы все ограничения были строгими равенствами (с добавлением дополнительных балансовых переменных), а переменные — неотрицательными."
+      },
+      {
+        "text": "Каким образом неравенство ограничения ∑ a_ij · x_j ≤ b_i приводится к каноническому равенству для симплекс-таблицы?",
+        "options": [
+          "а) Введением неотрицательной дополнительной (балансовой) переменной x_{n+i} ≥ 0: ∑ a_ij · x_j + x_{n+i} = b_i;",
+          "б) Умножением обеих частей неравенства на -1;",
+          "в) Отбрасыванием знака неравенства и заменой его на знак равенства без изменений;",
+          "г) Извлечением квадратного корня из обеих частей."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Для неравенства вида «≤» вводится балансовая переменная x_{n+i} ≥ 0 со знаком «плюс», отражающая неиспользованный остаток ресурса."
+      },
+      {
+        "text": "Каково геометрическое свойство оптимального решения задачи ЛП при ограниченной области допустимых решений (ОДР)?",
+        "options": [
+          "а) Оптимум всегда достигается как минимум в одной из крайних угловых точек (вершин) выпуклого многогранника решений;",
+          "б) Оптимум всегда находится строго в геометрическом центре многогранника;",
+          "в) Оптимум лежит вне многогранника решений;",
+          "г) Линейные задачи не имеют геометрического смысла."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Фундаментальная теорема ЛП: линейная функция на выпуклом многограннике ограничений достигает своего экстремума в вершине (или на ребре/грани между вершинами)."
+      },
+      {
+        "text": "Что в симплекс-методе определяет выбор «Разрешающего столбца» (ведущей переменной, вводимой в базис) при максимизации целевой функции?",
+        "options": [
+          "а) Столбец с наибольшим по модулю отрицательным значением индексной (оценочной) строки Δ_j < 0;",
+          "б) Столбец с минимальной суммой коэффициентов расхода ресурсов;",
+          "в) Первый столбец таблицы слева;",
+          "г) Столбец, выбранный случайным образом."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "При поиске максимума в базис вводится переменная с наибольшей отрицательной симплекс-оценкой Δ_j = z_j - c_j < 0, дающая максимальный удельный прирост целевой функции."
+      },
+      {
+        "text": "Что такое «Анализ чувствительности (Sensitivity Analysis)» оптимального проектного плана?",
+        "options": [
+          "а) Определение интервалов устойчивости параметров модели (коэффициентов целевой функции c_j и объемов ресурсов b_i), в пределах которых оптимальный базис сохраняется;",
+          "б) Исследование тепловой чувствительности процессора сервера;",
+          "в) Проверка эмоциональной устойчивости членов рабочей группы;",
+          "г) Измерение чувствительности мыши оператора."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Анализ чувствительности показывает, насколько можно изменить запасы ресурсов или цены продукции без разрушения текущей оптимальной структуры производства."
+      }
+    ]
+  },
+  "10": {
+    "title": "Билет 10: Транспортные задачи оптимизации и метод потенциалов",
+    "description": "Баланс транспортной задачи, методы опорного плана, метод потенциалов и дискретные задачи (Лаб. 4 ч. 2).",
+    "questions": [
+      {
+        "text": "Какое условие математически определяет «Замкнутую (сбалансированную) транспортную задачу»?",
+        "options": [
+          "а) Суммарный объем предложения у всех поставщиков в точности равен суммарному спросу всех пунктов потребления: ∑(i=1..m) a_i = ∑(j=1..n) b_j;",
+          "б) Все маршруты доставки грузов образуют замкнутый кольцевой контур на карте;",
+          "в) Число поставщиков строго равно числу потребителей (m = n);",
+          "г) Стоимость всех перевозок одинакова (c_ij = 1)."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Транспортная задача называется замкнутой (сбалансированной), если совокупный объем запасов поставщиков в точности покрывает суммарные потребности получателей: ∑ a_i = ∑ b_j."
+      },
+      {
+        "text": "Каким образом несбалансированная (открытая) транспортная задача с превышением предложения над спросом (∑ a_i > ∑ b_j) приводится к закрытому виду?",
+        "options": [
+          "а) Введением фиктивного потребителя B_{n+1} со спросом b_{n+1} = ∑ a_i - ∑ b_j и нулевыми стоимостями доставки c_{i, n+1} = 0;",
+          "б) Принудительным списанием избытка продукции на складах;",
+          "в) Введением фиктивного поставщика с отрицательным запасом;",
+          "г) Увеличением цен на перевозку в 2 раза."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "При избытке предложения вводится фиктивный потребитель с фиктивным объемом спроса, равным излишку продукции, и нулевыми тарифами доставки."
+      },
+      {
+        "text": "Сколько занятых (базисных) клеток должен содержать НЕВЫРОЖДЕННЫЙ опорный план транспортной задачи размерности m × n?",
+        "options": [
+          "а) Ровно m + n - 1 занятых клеток;",
+          "б) Ровно m · n занятых клеток;",
+          "в) Ровно m + n занятых клеток;",
+          "г) Ровно m + n + 1 занятых клеток."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Критерий невырожденности опорного плана транспортной задачи: число независимых базисных клеток равно m + n - 1 при отсутствии замкнутых циклов среди них."
+      },
+      {
+        "text": "В чем заключается алгоритм «Метода минимальной стоимости (минимального элемента)» для построения начального опорного плана?",
+        "options": [
+          "а) На каждом шаге выбирается свободная клетка матрицы с наименьшим тарифом перевозки c_ij = min, и в нее записывается максимально возможная поставка x_ij = min(a_i, b_j);",
+          "б) Заполнение таблицы начинается строго с левого верхнего угла (1, 1) без учета тарифов c_ij;",
+          "в) Поставки распределяются поровну между всеми клетками таблицы;",
+          "г) Выбирается клетка с максимальным тарифом перевозки."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Метод наименьшей стоимости является жадным алгоритмом: в первую очередь загружаются маршруты с минимальной стоимостью c_ij."
+      },
+      {
+        "text": "Какое условие связывает потенциалы поставщиков u_i и потребителей v_j для всех БАЗИСНЫХ (занятых) клеток в «Методе потенциалов»?",
+        "options": [
+          "а) u_i + v_j = c_ij для всех базисных клеток (i, j);",
+          "б) u_i · v_j = c_ij;",
+          "в) u_i - v_j = c_ij;",
+          "г) u_i + v_j = 0."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "В методе потенциалов система потенциалов определяется из равенств u_i + v_j = c_ij для всех m+n-1 базисных клеток при произвольной фиксации одного потенциала (напр., u_1 = 0)."
+      },
+      {
+        "text": "Каково условие ОПТИМАЛЬНОСТИ опорного плана транспортной задачи по методу потенциалов при минимизации общих затрат?",
+        "options": [
+          "а) Оценки всех свободных клеток неотрицательны: Δ_ij = c_ij - (u_i + v_j) ≥ 0 для всех свободных (i, j);",
+          "б) Оценки всех свободных клеток строго отрицательны Δ_ij < 0;",
+          "в) Сумма потенциалов всех поставщиков равна нулю ∑ u_i = 0;",
+          "г) В матрице не осталось ни одной свободной клетки."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "План оптимален, если косвенные затраты не превышают прямые тарифы: Δ_ij = c_ij - (u_i + v_j) ≥ 0. Если есть Δ_ij < 0, план можно улучшить."
+      },
+      {
+        "text": "Что представляет собой «Цикл пересчета (сдвига)» при улучшении неоптимального опорного плана транспортной задачи?",
+        "options": [
+          "а) Замкнутая ломаная линия, вершины которой лежат в базисных клетках и одной выбранной свободной клетке с Δ_ij < 0, а звенья расположены строго параллельно строкам и столбцам таблицы;",
+          "б) Произвольный круговой маршрут по диагоналям таблицы;",
+          "в) Полная очистка всей таблицы и заполнение ее заново;",
+          "г) Инвертирование знаков всех тарифов перевозок."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Цикл пересчета строится по прямоугольным звеньям с чередованием знаков (+ / -) для перераспределения минимальной поставки \\theta = min(x_ij^-)."
+      },
+      {
+        "text": "Какой метод точного решения применяется для задач «Целочисленного линейного программирования» (ЦЛП) в проектной квалиметрии?",
+        "options": [
+          "а) Метод ветвей и границ (метод Лэнд-Дойг) и метод секущих плоскостей Гомори;",
+          "б) Метод градиентного спуска с постоянным шагом;",
+          "в) Преобразование Фурье над дискретными выборками;",
+          "г) Метод наименьших квадратов."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "Для целочисленных задач ЛП стандартом являются метод ветвей и границ (Branch and Bound) и алгоритмы отсечений Гомори."
+      },
+      {
+        "text": "В чем заключается явление «Вырожденности» плана в транспортной задаче и как оно устраняется?",
+        "options": [
+          "а) Число занятых клеток оказывается строго меньше m + n - 1; устраняется занесением условной нулевой поставки (\u000barepsilon = 0) в подходящую свободную клетку без образования цикла;",
+          "б) Все тарифы перевозок становятся равными нулю;",
+          "в) Число потребителей превышает 1 000 000;",
+          "г) Вырожденные задачи невозможно решить математически."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "При одновременном исчерпании запаса поставщика и спроса потребителя число базисных клеток < m+n-1. Вводится фиктивный нуль ε в клетку для замыкания дерева базы."
+      },
+      {
+        "text": "Какой программный инструмент MS Excel используется для автоматизированного решения задач структурно-параметрической оптимизации (Лаб. 4 ч. 2)?",
+        "options": [
+          "а) Надстройка «Поиск решения» (Solver) с выбором метода «Поиск решения линейных задач симплекс-методом» (Simplex LP);",
+          "б) Мастер диаграмм и графиков;",
+          "в) Автофильтр и промежуточные итоги;",
+          "г) Функция ВПР (VLOOKUP) для текстового поиска."
+        ],
+        "correct": [
+          0
+        ],
+        "explanation": "В лабораторном практикуме Кириллова В. И. моделирование оптимизационных задач выполняется с помощью надстройки MS Excel «Поиск решения» (Simplex LP Solver)."
+      }
+    ]
+  }
+};
+
+    // Safe storage wrapper
+    const safeStorage = {
+      _data: {},
+      getItem(key) {
+        try {
+          if (window.location.protocol !== 'file:' && window.localStorage) {
+            return window.localStorage.getItem(key);
+          }
+        } catch (e) {}
+        return this._data[key] !== undefined ? this._data[key] : null;
+      },
+      setItem(key, val) {
+        try {
+          if (window.location.protocol !== 'file:' && window.localStorage) {
+            window.localStorage.setItem(key, val); return;
+          }
+        } catch (e) {}
+        this._data[key] = val;
+      }
+    };
+
+    let initialErrors = [];
     try {
-      if (window.location.protocol !== 'file:' && window.localStorage) {
-        window.localStorage.setItem(key, val); return;
+      const errStr = safeStorage.getItem('kisa_e');
+      initialErrors = errStr ? JSON.parse(errStr) : [];
+      if (!Array.isArray(initialErrors)) initialErrors = [];
+    } catch (e) {
+      initialErrors = [];
+    }
+
+    let S = {
+      mode: 'ticket',
+      ticket: null,
+      qs: [],
+      ci: 0,
+      ok: 0,
+      err: 0,
+      total: 0,
+      errors: initialErrors
+    };
+
+    let saved = { ok: 0, err: 0, total: 0 };
+    try {
+      const savedStr = safeStorage.getItem('kisa_s');
+      if (savedStr) {
+        const parsed = JSON.parse(savedStr);
+        if (parsed && typeof parsed.ok === 'number') {
+          saved = parsed;
+        }
       }
     } catch (e) {}
-    this._data[key] = val;
-  }
-};
-
-const Q = [
-  {q:"Результатом функционирования какой государственной системы является оценка соответствия требований регламентам и стандартам?",o:["НСТНиС","НСА","НСПС","Госстандарт","ЕАЭС"],c:2,t:"Гос.системы",tk:[1,2,14]},
-  {q:"Результатом функционирования какой государственной системы являются установленные в регламентах и стандартах требования?",o:["НСПС","НСТНиС","НСА","Госстандарт","ТНиС"],c:1,t:"Гос.системы",tk:[2,3,14]},
-  {q:"Результатом функционирования какой государственной системы является право субъектов хозяйствования на выполнение работ в определённой области?",o:["НСПС","НСТНиС","Госстандарт","НСА","ТНиС"],c:3,t:"Гос.системы",tk:[2,4,17]},
-  {q:"Целью технического нормирования и стандартизации является (вариант 1):",o:["Регулирование торговли","Контроль производства","Развитие экспорта","Защита жизни","Лицензирование"],c:3,t:"Цели ТНиС",tk:[1,2,17]},
-  {q:"Целью технического нормирования и стандартизации является (вариант 2):",o:["Регулирование импорта","Защита здоровья","Контроль цен","Налогообложение","Лицензирование"],c:1,t:"Цели ТНиС",tk:[2,3,17]},
-  {q:"Целью технического нормирования и стандартизации является (вариант 3):",o:["Государственный контроль","Регулирование цен","Защита имущества","Регистрация предприятий","Контроль импорта"],c:2,t:"Цели ТНиС",tk:[2,7,17]},
-  {q:"Целью технического нормирования и стандартизации является (вариант 4):",o:["Контроль экспорта","Регулирование торговли","Лицензирование","Регистрация","Охрана окружающей среды"],c:4,t:"Цели ТНиС",tk:[2,5,17]},
-  {q:"Целью технического нормирования и стандартизации является (вариант 5):",o:["Повышение конкурентоспособности продукции","Государственный контроль","Налоговое регулирование","Управление предприятиями","Регулирование занятости"],c:0,t:"Цели ТНиС",tk:[7,8,17]},
-  {q:"Какой субъект хозяйствования определяет единую государственную политику в области ТНиС?",o:["Президент Республики Беларусь","Совет Министров","Госстандарт","Национальное собрание","Минэкономики"],c:0,t:"Субъекты",tk:[1,8,17]},
-  {q:"Какой субъект хозяйствования осуществляет единую государственную политику в области ТНиС?",o:["Президент РБ","Совет Министров","Госстандарт","Минэкономики","Национальное собрание"],c:1,t:"Субъекты",tk:[3,8,17]},
-  {q:"Какой субъект хозяйствования утверждает программу разработки технических регламентов РБ?",o:["Президент РБ","Совет Министров","Госстандарт","Национальное собрание","Технический комитет"],c:1,t:"Субъекты",tk:[4,10,17]},
-  {q:"Какой субъект хозяйствования утверждает технический регламент?",o:["Президент РБ","Совет Министров","Госстандарт","Технический комитет","Минэкономики"],c:1,t:"Субъекты",tk:[5,8,17]},
-  {q:"Какой субъект хозяйствования вводит в действие технический регламент?",o:["Президент РБ","Гос. комитет по стандартизации","Совет Министров","Технический комитет","Минэкономики"],c:1,t:"Субъекты",tk:[6,8,19]},
-  {q:"Какой субъект хозяйствования осуществляет государственную регистрацию технических условий?",o:["Госстандарт","Совет Министров","Орган, уполномоченный Советом Министров","Президент РБ","Технический комитет"],c:2,t:"Субъекты",tk:[4,15,19]},
-  {q:"Государственный надзор за выполнением требований ТР осуществляет:",o:["Совет Министров","Президент","Госстандарт","Технический комитет","Национальное собрание"],c:2,t:"Субъекты",tk:[8,14,19]},
-  {q:"Технический регламент РБ должен содержать (вариант 1):",o:["Рекомендации по производству","Технические требования к продукции","Стандарты организации","Административные процедуры","Методические указания"],c:1,t:"Тех.регламент",tk:[1,7,18]},
-  {q:"Технический регламент РБ должен содержать (вариант 2):",o:["Правила выпуска продукции в обращение","Административные процедуры","Стандарты организации","Рекомендации по проектированию","Методические указания"],c:0,t:"Тех.регламент",tk:[3,7,18]},
-  {q:"Технический регламент РБ может содержать (вариант 1):",o:["Требования к терминологии","Административные процедуры","Стандарты организации","Методические указания","Внутренние регламенты"],c:0,t:"Тех.регламент",tk:[4,8,18]},
-  {q:"Технический регламент РБ может содержать (вариант 2):",o:["Административные процедуры","Внутренние регламенты","Правила маркировки продукции знаком соответствия","Стандарты организации","Методические указания"],c:2,t:"Тех.регламент",tk:[6,8,18]},
-  {q:"Технический регламент РБ может содержать (вариант 3):",o:["Стандарты организации","Внутренние регламенты","Методические указания","Правила и формы подтверждения соответствия","Административные процедуры"],c:3,t:"Тех.регламент",tk:[5,8,18]},
-  {q:"Через какой срок может быть введён в действие ТР после официального опубликования?",o:["1 месяц","2 месяца","3 месяца","6 месяцев","1 год"],c:2,t:"Тех.регламент",tk:[8,14,18]},
-  {q:"Через какой срок может быть введён в действие ТКП после публикации?",o:["30 дней","60 дней","90 дней","120 дней","6 месяцев"],c:1,t:"Тех.регламент",tk:[8,16,18]},
-  {q:"Укажите ТНПА ТНиС, объектом стандартизации которого является конкретная марка продукции:",o:["Государственный стандарт","Технический кодекс","Общегосударственный классификатор","Технический регламент","Технические условия"],c:4,t:"Виды ТНПА",tk:[1,8,18]},
-  {q:"Какой ТНПА ТНиС разрабатывается и утверждается юридическим лицом или индивидуальным предпринимателем?",o:["Технический регламент","Государственный стандарт","Технический кодекс","Общегос. классификатор","Стандарт организации"],c:4,t:"Виды ТНПА",tk:[1,16,19]},
-  {q:"Определение «ТНПА ТНиС, содержащий технические требования только к процессам, работам, услугам» соответствует:",o:["Технический регламент","Государственный стандарт","Тех. кодекс установившейся практики","Технические условия","Стандарт организации"],c:2,t:"Виды ТНПА",tk:[3,16,19]},
-  {q:"ТНПА ТНиС, объектом стандартизации которого является технико-экономическая и социальная информация:",o:["Технический регламент","Государственный стандарт","Общегосударственный классификатор","Технические условия","Стандарт организации"],c:2,t:"Виды ТНПА",tk:[5,16,19]},
-  {q:"Срок действия технических условий не должен превышать (лет):",o:["Одного","Двух","Трёх","Пяти","Десяти"],c:3,t:"Виды ТНПА",tk:[3,16,19]},
-  {q:"Государственный стандарт не должен содержать требования к:",o:["Терминологии","Административным процедурам","Продукции","Методам контроля","Маркировке"],c:1,t:"Виды ТНПА",tk:[6,16,19]},
-  {q:"Какому документу не должен противоречить технический кодекс установившейся практики?",o:["Техническому регламенту","Государственному стандарту","Стандарту организации","Техническим условиям","Рекомендациям"],c:0,t:"Виды ТНПА",tk:[4,16,19]},
-  {q:"Какому документу не должен противоречить стандарт организации?",o:["Государственному стандарту","Техническим условиям","Стандарту предприятия","Техническому регламенту","Рекомендациям ISO"],c:3,t:"Виды ТНПА",tk:[5,9]},
-  {q:"Каким документам не должны противоречить требования технических условий?",o:["Стандартам организации","Государственным стандартам","Рекомендациям","Техническим регламентам","Методическим указаниям"],c:3,t:"Виды ТНПА",tk:[6,16]},
-  {q:"Какой стандарт содержит общие организационно-методические требования для определённой области деятельности?",o:["Основополагающий","Стандарт на продукцию","На методы контроля","На процесс","На услугу"],c:0,t:"Виды ТНПА",tk:[14,16]},
-  {q:"ТНПА, который содержит обязательные требования для соблюдения:",o:["Государственный стандарт","Стандарт организации","Тех. кодекс","Технический регламент","Рекомендация"],c:3,t:"Виды ТНПА",tk:[15,17]},
-  {q:"«Ссылка, идентифицирующая конкретные ТНПА так, чтобы пересмотры имели силу только после внесения изменений в ТР» — это:",o:["Общая ссылка","Ссылка с твёрдой идентификацией","Со скользящей идентификацией","Косвенная ссылка","Прямая ссылка"],c:1,t:"Ссылки",tk:[1,3,20]},
-  {q:"«Ссылка без идентификации, указывающая на все ТНПА в определённой области» — это:",o:["С твёрдой идентификацией","Со скользящей идентификацией","Прямая ссылка","Общая ссылка","Косвенная ссылка"],c:3,t:"Ссылки",tk:[3,5,20]},
-  {q:"«Требование соответствия назначению, касающееся состояния продукции при их применении» — это:",o:["Обязательное","Техническое","Методическое","Эксплуатационное требование","Описательное требование"],c:3,t:"Требования",tk:[3,9,20]},
-  {q:"«Требование соответствия назначению, касающееся характеристик продукции» — это:",o:["Обязательное","Техническое","Методическое","Эксплуатационное требование","Описательное требование"],c:4,t:"Требования",tk:[3,9,20]},
-  {q:"«Технические нормы, правила, характеристики или иные требования к объектам ТНиС» — это:",o:["Обязательное требование","Методическое","Описательное","Эксплуатационное","Технические требования"],c:4,t:"Требования",tk:[4,9,20]},
-  {q:"«Интервал времени от даты введения ТНПА в действие до момента его отмены или замены» — это:",o:["Период действия","Срок действия","Жизненный цикл","Период применения","Срок годности"],c:1,t:"Операции",tk:[3,6,20]},
-  {q:"Модификация, дополнение или исключение части текста ТНПА без изменения его обозначения — это:",o:["Поправка","Пересмотр","Изменение","Переиздание","Отмена"],c:2,t:"Операции",tk:[9,10,20]},
-  {q:"Основная цель Всемирной торговой организации:",o:["Регулирование нац. экономик","Контроль за производством","Содействие торговле без барьеров и негативных последствий","Управление пошлинами","Лицензирование экспорта"],c:2,t:"ВТО",tk:[3,9]},
-  {q:"Принципы международной торговли ВТО:",o:["Закрытость рынков","Протекционизм","Ограничение импорта","Устранение технических барьеров в торговле","Контроль цен"],c:3,t:"ВТО",tk:[1,9]},
-  {q:"Принципы международной торговли ВТО включают:",o:["Закрытость","Непредсказуемость","Предсказуемость","Протекционизм","Ограничение"],c:2,t:"ВТО",tk:[4,9]},
-  {q:"«Различия требований национальных и международных стандартов» — это:",o:["Санитарные меры","Технические барьеры в торговле","Гармонизация","Стандартизация","Сертификация"],c:1,t:"ВТО",tk:[5,9]},
-  {q:"«Меры гос. политики, направленные на охрану здоровья от риска пищевых добавок» — это:",o:["Технические барьеры","Стандартизация","Санитарные и фитосанитарные меры","Сертификация","Аккредитация"],c:2,t:"ВТО",tk:[6,9]},
-  {q:"Документ «Международная конвенция» является:",o:["Стандартом","Регламентом","Международным договором","Рекомендацией","Классификатором"],c:2,t:"Межд.орг.",tk:[1,10]},
-  {q:"Какие документы OIML обязательны для всех стран-участниц?",o:["OIML R","OIML D","OIML G","OIML P","OIML S"],c:1,t:"Межд.орг.",tk:[1,10]},
-  {q:"Начало международной стандартизации относится к году:",o:["1865","1875","1906","1947","1948"],c:1,t:"Межд.орг.",tk:[4,10]},
-  {q:"Год основания IEC (Международной электротехнической комиссии):",o:["1865","1875","1906","1947","1955"],c:2,t:"Межд.орг.",tk:[5,10]},
-  {q:"Год основания ITU (Международного союза электросвязи):",o:["1865","1875","1906","1947","1955"],c:0,t:"Межд.орг.",tk:[6,10]},
-  {q:"Первый в мире национальный комитет по стандартизации создан в:",o:["Франции","Германии","США","Великобритании","Швейцарии"],c:3,t:"Межд.орг.",tk:[3,10]},
-  {q:"Какое подразделение ISO является разработчиком стандартов?",o:["Генеральная ассамблея","Совет","Техническое руководящее бюро","Центральный секретариат","Генеральный секретарь"],c:2,t:"Межд.орг.",tk:[3,10]},
-  {q:"Международный стандарт ISO считается принятым, если:",o:["Более 50% «за»","Более 2/3 «за» и ≤25% «против»","Единогласно","Более 75% «за»","Более 90% «за»"],c:1,t:"Межд.орг.",tk:[10,14]},
-  {q:"Национальные стандарты США обозначаются:",o:["DIN","ANSI","JIS","BSI","AFNOR"],c:1,t:"Межд.орг.",tk:[6,10]},
-  {q:"Обозначение стандарта Японии:",o:["DIN","ANSI","JIS","BSI","AFNOR"],c:2,t:"Межд.орг.",tk:[9,10]},
-  {q:"Международные стандарты в области информационно-коммуникационных технологий принимают (Б6):",o:["ITU","ISO","CEN","OIML","CENELEC"],c:0,t:"Межд.орг.",tk:[6,12]},
-  {q:"Международные стандарты в области информационно-коммуникационных технологий принимают (Б5):",o:["ITU","ISO","CEN","OIML","IEC"],c:4,t:"Межд.орг.",tk:[5,12]},
-  {q:"Фундаментальный принцип Нового подхода к технической гармонизации:",o:["Ограничение законодательства основополагающими требованиями","Установление конкретных тех. норм","Контроль качества","Унификация всех стандартов","Обязательная сертификация"],c:0,t:"Европа",tk:[1,9,20]},
-  {q:"Разработку стандартов Нового подхода осуществляют (вариант 1):",o:["ISO","OIML","CEN","ВТО","ООН"],c:2,t:"Европа",tk:[3,9,20]},
-  {q:"Разработку стандартов Нового подхода осуществляют (вариант 2):",o:["ISO","CENELEC","OIML","ВТО","ITU"],c:1,t:"Европа",tk:[5,9,20]},
-  {q:"Разработку стандартов Нового подхода осуществляют (вариант 3):",o:["ISO","OIML","ВТО","ITU","ETSI"],c:4,t:"Европа",tk:[6,11]},
-  {q:"Гармонизированный европейский стандарт конкретизирует требования:",o:["Директивы ЕС","Стандартов ISO","Национальных стандартов","Рекомендаций OIML","Конвенций ООН"],c:0,t:"Европа",tk:[4,11]},
-  {q:"Гарм. европейский стандарт разрабатывается после договора между:",o:["ISO и IEC","ВТО и ЕС","Комиссией ЕС и CEN/CENELEC/ETSI","Нац. комитетами","OIML и ITU"],c:2,t:"Европа",tk:[11,14]},
-  {q:"Новый подход НЕ затронул сектора (продукция):",o:["Электрооборудование","Строительные изделия","Игрушки","Автомобили и тракторы","Средства инд. защиты"],c:3,t:"Европа",tk:[14,15,16]},
-  {q:"Договор о ЕАЭС сформирован на основе:",o:["Стандартов ISO","Правил ВТО","Директив ЕС","Конвенций ООН","Стандартов IEC"],c:1,t:"ЕАЭС",tk:[3,5]},
-  {q:"Какие стандарты взаимосвязаны с техническими регламентами РБ?",o:["ISO","ГОСТ","EN","СТБ","ANSI"],c:3,t:"ЕАЭС",tk:[4,12]},
-  {q:"Какие стандарты взаимосвязаны с техническими регламентами ЕАЭС?",o:["ГОСТ","СТБ","EN","ISO","ANSI"],c:0,t:"ЕАЭС",tk:[6,12]},
-  {q:"В качестве каких ТНПА могут быть приняты международные документы?",o:["Технических регламентов","Стандартов организации","Технических условий","Только рекомендаций","Классификаторов"],c:0,t:"Соответствие",tk:[1,15]},
-  {q:"Чем НЕ определяется степень соответствия гос. стандарта международному?",o:["Внесением тех. отклонений","Изменением структуры","Идентификацией тех. отклонений","Авторские права","Редакционными изменениями"],c:3,t:"Соответствие",tk:[1,15]},
-  {q:"Чем определяется степень соответствия (вариант 1)?",o:["Внесением технических отклонений","Авторскими правами","Коммерческими интересами","Политическими решениями","Традициями"],c:0,t:"Соответствие",tk:[3,15]},
-  {q:"Чем определяется степень соответствия (вариант 2)?",o:["Авторскими правами","Внесением редакционных изменений","Политическими решениями","Коммерческими интересами","Традициями"],c:1,t:"Соответствие",tk:[4,15]},
-  {q:"Чем определяется степень соответствия (вариант 3)?",o:["Авторскими правами","Коммерческие интересы","Политические решения","Идентификацией технических отклонений","Традиции"],c:3,t:"Соответствие",tk:[5,6]},
-  {q:"Степень соответствия в тексте гармонизированного государственного стандарта указывается (вариант 1):",o:["На титульном листе","В тексте стандарта","В приложении","В предисловии","В оглавлении"],c:0,t:"Соответствие",tk:[1,15]},
-  {q:"Степень соответствия в тексте гармонизированного государственного стандарта указывается (вариант 2):",o:["В тексте стандарта","В библиографических данных","В приложении","В предисловии","В оглавлении"],c:1,t:"Соответствие",tk:[4,15]},
-  {q:"При какой степени соответствия стандарт считается принятым?",o:["Идентичной","Модифицированной","Неэквивалентной","Любой","Частичной"],c:0,t:"Соответствие",tk:[5,15]},
-  {q:"Международный стандарт может быть принят в качестве идентичного государственного стандарта методом:",o:["Подтверждения","Перевода","Перепечатки","Переиздания","Новой редакции"],c:3,t:"Соответствие",tk:[6,15]},
-  {q:"Обозначение гос. стандарта, идентичного проекту ISO:",o:["СТБ ISO 12345-2020","СТБ ISO/DIS 12345-2020","ГОСТ ISO 12345-2020","СТБ EN 12345-2020","ISO/СТБ 12345"],c:1,t:"Соответствие",tk:[9,14,16]},
-  {q:"Участие в разработке международных стандартов позволяет (вариант 1):",o:["Реализовать нац. интересы на международном уровне","Ограничить импорт","Повысить пошлины","Закрыть рынки","Снизить качество"],c:0,t:"Соответствие",tk:[5,15]},
-  {q:"Участие в разработке международных стандартов позволяет (вариант 2):",o:["Ограничить импорт","Повысить пошлины","Сократить сроки принятия гармониз. нац. стандартов","Закрыть рынки","Увеличить барьеры"],c:2,t:"Соответствие",tk:[4,15]},
-  {q:"Метод установления базовых решений на основе прогрессивных методов и режимов работы:",o:["Симплификация","Унификация","Типизация","Агрегатирование","Кооперирование"],c:2,t:"Методы",tk:[1,11]},
-  {q:"Метод рационального уменьшения числа типов, видов и размеров объектов:",o:["Симплификация","Унификация","Типизация","Агрегатирование","Кооперирование"],c:1,t:"Методы",tk:[4,11]},
-  {q:"Метод отбора из существующей совокупности и ограничения номенклатуры без усовершенствований:",o:["Симплификация","Унификация","Типизация","Агрегатирование","Кооперирование"],c:0,t:"Методы",tk:[5,11]},
-  {q:"«Установление показателей свойств существующей и освоенной продукции» — это:",o:["Опережающая","Комплексная","Унификация","Станд-я по достигнутому уровню","Типизация"],c:3,t:"Методы",tk:[1,11]},
-  {q:"«Целенаправленное установление системы взаимосвязанных требований» — это:",o:["Унификация","Типизация","Комплексная стандартизация","Симплификация","Агрегатирование"],c:2,t:"Методы",tk:[5,11]},
-  {q:"«Форма сотрудничества предприятий, совместно изготовляющих конечную продукцию» — это:",o:["Унификация","Типизация","Симплификация","Агрегатирование","Кооперирование производства"],c:4,t:"Методы",tk:[4,11]},
-  {q:"«Пригодность одного изделия для использования вместо другого при заданных условиях» — это:",o:["Унификация","Взаимозаменяемость","Типизация","Совместимость","Стандартизация"],c:1,t:"Методы",tk:[6,12]},
-  {q:"Допуск — это:",o:["Номинальный размер","Действительный размер","Разность между верхним и нижним предельными размерами","Среднее значение","Отклонение от номинала"],c:2,t:"Допуски",tk:[8,9,10]},
-  {q:"«Соединение наружного и внутреннего размерных элементов при сборке» — это:",o:["Допуск","Отклонение","Зазор","Посадка","Натяг"],c:3,t:"Допуски",tk:[13,14]},
-  {q:"При посадке с натягом:",o:["Отверстие больше вала","Вал больше отверстия","Размеры равны","Зазор может быть любым","Размеры не нормируются"],c:1,t:"Допуски",tk:[16,17]},
-  {q:"При посадке с зазором:",o:["Вал больше отверстия","Отверстие больше вала","Размеры равны","Натяг обязателен","Размеры не нормируются"],c:1,t:"Допуски",tk:[16,17]},
-  {q:"К основным параметрам нормального профиля поверхности относятся (вариант 1):",o:["Ra","Rz","Базовая длина","Rmax","Средний шаг"],c:2,t:"Шерохов.",tk:[1,12]},
-  {q:"К основным параметрам нормального профиля поверхности относятся (вариант 2):",o:["Средняя линия профиля","Ra","Rz","Sm","tp"],c:0,t:"Шерохов.",tk:[7,12]},
-  {q:"К основным параметрам нормального профиля поверхности относятся (вариант 3):",o:["Ra","Rz","Sm","tp","Отклонения профиля от средней линии"],c:4,t:"Шерохов.",tk:[7,12]},
-  {q:"К стандартизованным параметрам шероховатости относятся:",o:["Базовая длина","Средняя линия","Высота выступов","Sm — средний шаг неровностей","Глубина впадин"],c:3,t:"Шерохов.",tk:[7,13]},
-  {q:"Какой параметр шероховатости является предпочтительным?",o:["Rz","Rmax","Ra","Sm","tp"],c:2,t:"Шерохов.",tk:[9,15]},
-  {q:"Основные ряды предпочтительных чисел содержат все целые степени:",o:["Двух","Пяти","Десяти","Ста","Тысячи"],c:2,t:"Ряды",tk:[13,14]},
-  {q:"«Мат. характеристики сигнала, рассматриваемого как единое целое» — это:",o:["Математические характеристики","Физические","Общие характеристики сигнала","Спектральные","Частные"],c:2,t:"Сигналы",tk:[4,13]},
-  {q:"«Сигнал, мгновенные значения которого в любой момент известны» — это:",o:["Случайный","Периодический","Аналоговый","Детерминированный сигнал","Дискретный"],c:3,t:"Сигналы",tk:[6,13]},
-  {q:"«Упорядоченный ряд отметок с последовательным рядом значений величины» — это:",o:["Диапазон","Шкала","Ряд","Градуировка","Калибровка"],c:1,t:"Сигналы",tk:[6,13]},
-  {q:"Какой принцип ТНиС: «общее согласие без серьёзных возражений у большинства»?",o:["Открытость","Доступность","Консенсус","Оптимальность","Комплексность"],c:2,t:"Принципы",tk:[14,15,16,17]},
-  {q:"Какой принцип ТНиС: «наилучшее сочетание эффекта и затрат»?",o:["Консенсус","Комплексность","Однозначность","Оптимальность","Целесообразность"],c:3,t:"Принципы",tk:[14,15,16,17]},
-  {q:"Принцип «добровольность» ТНиС относится к применению:",o:["Технических регламентов","ТКП и гос. стандартов","Общегос. классификаторов","Всех ТНПА","Только стандартов организации"],c:1,t:"Принципы",tk:[14,15,16,17]},
-  {q:"Что на 2-м месте в наименовании стандарта?",o:["Групповой заголовок (система)","Заголовок (объект стандартизации)","Подзаголовок (аспект)","Номер стандарта","Год утверждения"],c:1,t:"Структура",tk:[13,17]},
-  {q:"На каком месте подзаголовок в наименовании стандарта?",o:["На 1-м","На 2-м","На 3-м","На 4-м","В конце"],c:2,t:"Структура",tk:[13,16]},
-  {q:"Стандартизация на международном уровне завершается принятием (вариант 1):",o:["СТБ","ISO","ГОСТ","EN","ANSI"],c:1,t:"Уровни",tk:[5,14]},
-  {q:"Стандартизация на международном уровне завершается принятием (вариант 2):",o:["СТБ","ГОСТ","EN","ANSI","IEC"],c:4,t:"Уровни",tk:[6,14]},
-  {q:"Стандартная модель информационной безопасности описывается категорией:",o:["Конфиденциальность","Целостность","Доступность","Апеллируемость","Авторизация"],c:3,t:"ИБ",tk:[4,14]},
-  {q:"Резолюция Совета ЕС от 1989 года определила политику в области оценки соответствия, известную как:",o:["Старый подход","Глобальный подход","Новый подход","Комплексный подход","Единый стандарт"],c:1,t:"ВТО",tk:[2,7,11]},
-  {q:"Наличие маркировки CE на изделии свидетельствует о том, что оно:",o:["Произведено исключительно в Германии","Соответствует всем Директивам ЕС и подвергнуто процедурам оценки соответствия","Одобрено Генеральной Ассамблеей ВТО","Имеет пожизненную гарантию качества","Относится к экологически чистым продуктам питания"],c:1,t:"ВТО",tk:[2,7,12]},
-  {q:"Согласно Глобальному подходу, критерии деления оценки соответствия на модули НЕ включают:",o:["Стадии производства продукции","Тип применяемой оценки","Проверяющее лицо (изготовитель или инспектор)","Страну происхождения изготовителя","Использование стандартов EN ISO 9000"],c:3,t:"ВТО",tk:[2,7,13]},
-  {q:"Если государственный стандарт Республики Беларусь идентичен международному стандарту ISO, его обозначение выглядит как:",o:["СТБ ISO 12341:2007","СТБ ISO 12341-2007","СТБ-ISO-12341/2007","ISO СТБ 12341-2007","СТБ ISO 12341"],c:1,t:"Соответствие",tk:[2,11,18]},
-  {q:"Какое из обозначений соответствует государственному стандарту Республики Беларусь, идентичному международному техническому отчету?",o:["СТБ ISO 12341-2007","СТБ ISO/TS 20281-2007","СТБ EN 12341-2007","СТБ ISO/TR 20281-2007","СТБ IEC 62255-2007"],c:3,t:"Соответствие",tk:[2,11,19]},
-  {q:"Какое из обозначений соответствует проекту международного стандарта на этапе опроса?",o:["ISO 12345","СТБ ISO 12345","ISO/DIS 12345","ISO/FDIS 12345","ISO/CD 12345"],c:2,t:"Соответствие",tk:[7,8,12]},
-  {q:"Какой стандарт является основным результатом технического нормирования и гармонизации в рамках ЕАЭС?",o:["СТБ","ГОСТ","EN","DIN","ANSI"],c:1,t:"ЕАЭС",tk:[8,11,20]},
-  {q:"Предел допуска в стандартизации и метрологии — это:",o:["Разность предельных размеров","Установленные значения, определяющие верхние и нижние границы допустимых значений","Фактический размер изделия с учетом погрешности","Отклонение от номинального значения при изготовлении","Среднее арифметическое значение контролируемых величин"],c:1,t:"Допуски",tk:[10,12,18]},
-  {q:"Интервал допуска — это:",o:["Разность между верхним и нижним предельными размерами","Совокупность значений размера между пределами допуска","Погрешность средства измерения при калибровке","Допускаемый износ режущей кромки инструмента","Базовая длина профиля поверхности"],c:1,t:"Допуски",tk:[10,12,19]},
-  {q:"Какой документ, изначально применяемый на добровольной основе, становится обязательным, если ссылка на него внесена в технический регламент?",o:["Стандарт организации","Взаимосвязанный государственный стандарт (СТБ)","Методическое указание","Технический отчет","Рекомендация ISO"],c:1,t:"Виды ТНПА",tk:[10,13,20]},
-  {q:"Согласно Соглашению по ТБТ ВТО, к фундаментальным принципам международной торговли относятся:",o:["Протекционизм, закрытость, жесткие тарифные квоты","Открытость, гласность, предсказуемость","Целесообразность, консенсус, обязательность стандартов","Лицензирование, квотирование, таможенные пошлины","Унификация, симплификация, типизация и агрегатирование"],c:1,t:"ВТО",tk:[12,13,18]},
-  {q:"Какова основная цель Соглашений по ТБТ (техническим барьерам) и СФС (санитарным мерам) ВТО?",o:["Повышение таможенных пошлин на импортные товары","Преодоление и предупреждение технических барьеров в торговле и влияние на содержание ТНПА","Защита внутренних рынков от любого иностранного влияния","Контроль валютных курсов стран-участниц","Лицензирование всех видов внешнеэкономической деятельности"],c:1,t:"ВТО",tk:[13,18,19]},
-  {q:"Каков юридический статус Санитарных и фитосанитарных мер (СФС) по отношению к техническим регламентам (ТР)?",o:["Имеют исключительно рекомендательный характер","По своему статусу относятся к техническим регламентам (ТР)","Стоят выше технических регламентов РБ по закону","Являются стандартами организации и действуют внутри предприятий","Не регулируются государственными органами"],c:1,t:"ВТО",tk:[13,18,20]},
-  {q:"Что на титульном листе отличает предварительный государственный стандарт Республики Беларусь от обычного?",o:["Полное отсутствие года издания и утверждения","Надпись «Предварительный государственный стандарт Республики Беларусь»","Яркая красная полоса на обложке документа","Специальный защитный QR-код Госстандарта","Отметка комиссии по техническому нормированию"],c:1,t:"Структура",tk:[2,18,19]},
-  {q:"Что из перечисленного НЕ относится к дополнительной части ТНПА согласно правилам структуры?",o:["Библиографические данные стандарта","Предисловие и введение","Технические требования к продукции","Выходные данные об издании","Справочные и информационные приложения"],c:2,t:"Структура",tk:[7,18,19]},
-  {q:"Какие элементы допускается исключать при принятии модифицированного международного стандарта?",o:["Только наименование стандарта на национальном языке","Основные обязательные технические требования к безопасности","Отдельные пункты, примечания, сноски, справочные ссылки и библиографию","Весь основной текст стандарта без приложений","Обозначение стандарта и год его утверждения"],c:2,t:"Соответствие",tk:[11,19,20]},
-  {q:"Участие в разработке технических регламентов в Республике Беларусь могут принимать:",o:["Исключительно государственные министерства и ведомства","Любые юридические и физические лица","Только Президент Республики Беларусь лично","Только иностранные инвесторы и импортеры","Исключительно члены Совета Министров Республики Беларусь"],c:1,t:"Субъекты",tk:[2,7,20]},
-  {q:"Какое количество голосов необходимо для одобрения проекта межгосударственного стандарта (ГОСТ) в МГС?",o:["Простое большинство голосов стран-участниц","Консенсус (отсутствие принципиальных возражений)","Единогласное принятие всеми участниками","Не менее 75% голосов «за»","Не менее 90% голосов «за»"],c:1,t:"Межд.орг.",tk:[2,11,20]},
-  {q:"Что является объектом стандартизации СТБ согласно законодательству Республики Беларусь?",o:["Исключительно оборонная продукция и военная техника","Продукция, процессы, работы, услуги, имеющие перспективу многократного использования","Только государственные границы и таможенные посты","Только денежные знаки и банковские документы","Внутренние документы частных компаний и стартапов"],c:1,t:"Виды ТНПА",tk:[7,11,12]},
-  {q:"Какое обозначение имеет европейский стандарт в области электротехники?",o:["EN","ETS","HD (гармонизационный документ)","CEN","ISO"],c:2,t:"Европа",tk:[12,13,19]},
-  {q:"Каким основным методом стандартизации является создание систем изделий на основе их геометрического или функционального подобия?",o:["Симплификация","Типизация","Агрегатирование","Параметрическая стандартизация","Унификация"],c:3,t:"Методы",tk:[13,18,20]},
-  {q:"В каком международном соглашении прописаны принципы взаимного признания результатов испытаний продукции?",o:["Соглашение по ТБТ ВТО","Соглашение по СФС ВТО","Киотский протокол об экологии","Римский договор о создании ЕЭС","Генеральное соглашение по тарифам и торговле (ГАТТ)"],c:0,t:"ВТО",tk:[2,7,19]},
-  {q:"Какой нормативный срок установлен для публичного обсуждения проекта технического регламента Республики Беларусь?",o:["Не менее 15 календарных дней","Не менее 30 календарных дней","Не менее 60 календарных дней","Не менее 90 календарных дней","Не менее 6 календарных месяцев"],c:2,t:"Субъекты",tk:[11,12,18]},
-  {q:"К техническим барьерам в торговле (ТБТ) НЕ относятся:",o:["Различия требований национальных и международных стандартов","Различия в процедурах подтверждения соответствия","Таможенные пошлины и импортные тарифные квоты","Специфические требования к упаковке товаров","Различные правила маркировки знаком соответствия"],c:2,t:"ВТО",tk:[7,8,13]},
-  {q:"Что из перечисленного является примером системы подтверждения соответствия?",o:["Система налогообложения физических лиц","Система сертификации продукции","Система государственного таможенного контроля","Система международной логистики","Система бухгалтерского учета и отчетности"],c:1,t:"Соответствие",tk:[10,12,13]},
-  {q:"Применение Директив Нового и Глобального подхода в странах ЕС НЕ приводит к:",o:["Устранению технических барьеров в торговле","Введению единой обязательной маркировки CE","Увеличению количества дублирующих испытаний продукции","Многостороннему признанию сертификатов соответствия","Замене национальных стандартов Директивами ЕС"],c:2,t:"Европа",tk:[2,7,8]},
-];
-
-// ═══════════════════════════════════════
-// Strip " (вариант N)" / " (вариант N):" from question texts
-Q.forEach(q => { q.q = q.q.replace(/\s*\(вариант\s*\d+\)\s*:?\s*$/i, ''); });
-
-const TK = {};
-Q.forEach((q,i) => q.tk.forEach(t => { if(!TK[t])TK[t]=[]; TK[t].push(i); }));
-
-let initialErrors = [];
-try {
-  const errStr = safeStorage.getItem('tnis_e');
-  initialErrors = errStr ? JSON.parse(errStr) : [];
-  if (!Array.isArray(initialErrors)) initialErrors = [];
-} catch (e) {
-  initialErrors = [];
-}
-
-let S = {
-  mode:'ticket', ticket:null, qs:[], ci:0, ans:[], ok:0, err:0, total:0,
-  errors: initialErrors, locked:false
-};
-
-let saved = { ok: 0, err: 0, total: 0 };
-try {
-  const savedStr = safeStorage.getItem('tnis_s');
-  if (savedStr) {
-    const parsed = JSON.parse(savedStr);
-    if (parsed && typeof parsed.ok === 'number') {
-      saved = parsed;
+    if (saved.total) {
+      S.ok = saved.ok;
+      S.err = saved.err;
+      S.total = saved.total;
     }
-  }
-} catch (e) {}
-if(saved.ok){S.ok=saved.ok;S.err=saved.err;S.total=saved.total;}
 
-function $(id){return document.getElementById(id)}
+    let selectedIndices = [];
+    let sessionScore = 0;
+    let isAnswered = false;
 
-function init(){
-  const g=$('ticketGrid');
-  const nums=Object.keys(TK).map(Number).sort((a,b)=>a-b);
-  g.innerHTML=nums.map(t=>`<button class="t-btn" id="t${t}" data-ticket="${t}">${t}</button>`).join('');
-  // Ticket buttons
-  g.addEventListener('click',function(e){
-    const btn=e.target.closest('.t-btn');
-    if(btn && btn.dataset.ticket) pickTicket(+btn.dataset.ticket);
-  });
-  // Mode buttons — attach once
-  document.querySelectorAll('.mode-btn').forEach(b=>{
-    b.addEventListener('click',function(){setMode(this.dataset.mode);});
-  });
-  upStats();
-}
+    function shuffle(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
 
-function upStats(){
-  $('sTotal').textContent=S.total;
-  $('sOk').textContent=S.ok;
-  $('sErr').textContent=S.err;
-  $('sPct').textContent=S.total?Math.round(S.ok/S.total*100)+'%':'—';
-}
+    function init() {
+      const container = document.getElementById('ticketsContainer');
+      container.innerHTML = '';
+      
+      const tIds = Object.keys(ticketsData).sort((a, b) => parseInt(a) - parseInt(b));
+      
+      tIds.forEach(id => {
+        const ticket = ticketsData[id];
+        const card = document.createElement('div');
+        card.className = 'ticket-card';
+        card.onclick = () => startTicket(id);
+        
+        card.innerHTML = `
+          <div>
+            <div class="ticket-card-header">
+              <span class="ticket-tag">БЛОК #${id}</span>
+              <span class="ticket-count">${ticket.questions.length} вопросов</span>
+            </div>
+            <h3>${ticket.title}</h3>
+            <p>${ticket.description}</p>
+          </div>
+          <div style="margin-top: 14px; color: var(--accent); font-size: 0.72rem; font-weight: 700;">
+            НАЧАТЬ ТЕСТ →
+          </div>
+        `;
+        container.appendChild(card);
+      });
 
-function resetStats(){
-  if(confirm("Вы уверены, что хотите сбросить всю статистику и ошибки?")){
-    S.ok = 0; S.err = 0; S.total = 0; S.errors = [];
-    save();
-    upStats();
-    if(S.mode==='errors'){
+      upStats();
+    }
+
+    function upStats() {
+      document.getElementById('sTotal').textContent = S.total;
+      document.getElementById('sOk').textContent = S.ok;
+      document.getElementById('sErr').textContent = S.err;
+      document.getElementById('sPct').textContent = S.total ? Math.round(S.ok / S.total * 100) + '%' : '—';
+    }
+
+    function save() {
+      safeStorage.setItem('kisa_s', JSON.stringify({ ok: S.ok, err: S.err, total: S.total }));
+      safeStorage.setItem('kisa_e', JSON.stringify(S.errors));
+    }
+
+    function resetStats() {
+      if (confirm("Вы уверены, что хотите сбросить всю статистику и ошибки по КиСА?")) {
+        S.ok = 0; S.err = 0; S.total = 0; S.errors = [];
+        save();
+        upStats();
+        if (S.mode === 'errors') setMode('ticket');
+      }
+    }
+
+    function setMode(m) {
+      S.mode = m;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      
+      let btnId = 'modeTicket';
+      if (m === 'random') btnId = 'modeRandom';
+      else if (m === 'all') btnId = 'modeAll';
+      else if (m === 'errors') btnId = 'modeErrors';
+      document.getElementById(btnId).classList.add('active');
+      
+      const selectScreen = document.getElementById('selectScreen');
+      const quizScreen = document.getElementById('quizScreen');
+      const resultsScreen = document.getElementById('resultsScreen');
+      
+      if (m === 'ticket') {
+        selectScreen.classList.add('active');
+        quizScreen.classList.remove('active');
+        resultsScreen.classList.remove('active');
+      } else if (m === 'random') {
+        let all = [];
+        Object.keys(ticketsData).forEach(tId => {
+          ticketsData[tId].questions.forEach((_, qIdx) => all.push({ tId, qIdx }));
+        });
+        shuffle(all);
+        startCustomQuiz(all.slice(0, 15), "15 случайных вопросов по КиСА");
+      } else if (m === 'all') {
+        let all = [];
+        Object.keys(ticketsData).forEach(tId => {
+          ticketsData[tId].questions.forEach((_, qIdx) => all.push({ tId, qIdx }));
+        });
+        shuffle(all);
+        startCustomQuiz(all, "Марафон: Все 100 вопросов по КиСА");
+      } else if (m === 'errors') {
+        if (!S.errors.length) {
+          alert("Ошибок пока нет! Пройдите билеты, чтобы сформировать список ошибок.");
+          setMode('ticket');
+          return;
+        }
+        let errList = S.errors.map(k => {
+          const parts = k.split('_');
+          return { tId: parts[0], qIdx: parseInt(parts[1]) };
+        });
+        shuffle(errList);
+        startCustomQuiz(errList, "Работа над ошибками КиСА");
+      }
+    }
+
+    function startTicket(id) {
+      S.ticket = id;
+      S.qs = ticketsData[id].questions.map((_, i) => ({ tId: id, qIdx: i }));
+      S.ci = 0;
+      sessionScore = 0;
+      
+      document.getElementById('selectScreen').classList.remove('active');
+      document.getElementById('resultsScreen').classList.remove('active');
+      document.getElementById('quizScreen').classList.add('active');
+      
+      loadQuestion();
+    }
+
+    function startCustomQuiz(items, title) {
+      S.qs = items;
+      S.ci = 0;
+      sessionScore = 0;
+      
+      document.getElementById('selectScreen').classList.remove('active');
+      document.getElementById('resultsScreen').classList.remove('active');
+      document.getElementById('quizScreen').classList.add('active');
+      
+      loadQuestion(title);
+    }
+
+    function loadQuestion(customTitle) {
+      isAnswered = false;
+      selectedIndices = [];
+      
+      const item = S.qs[S.ci];
+      const q = ticketsData[item.tId].questions[item.qIdx];
+      
+      let title = customTitle || ticketsData[item.tId].title;
+      if (S.mode === 'random') title = '15 случайных вопросов';
+      else if (S.mode === 'all') title = 'Все вопросы';
+      else if (S.mode === 'errors') title = 'Работа над ошибками';
+      
+      document.getElementById('currentTicketTitle').textContent = title;
+      
+      const total = S.qs.length;
+      document.getElementById('progressText').textContent = `Вопрос ${S.ci + 1} из ${total}`;
+      document.getElementById('progressBar').style.width = `${((S.ci + 1) / total) * 100}%`;
+      
+      document.getElementById('questionText').textContent = q.text;
+      document.getElementById('explanationBox').style.display = 'none';
+      
+      const list = document.getElementById('optionsList');
+      list.innerHTML = '';
+      
+      const oi = q.options.map((_, i) => i);
+      shuffle(oi);
+      
+      oi.forEach(idx => {
+        const opt = q.options[idx];
+        const optionCard = document.createElement('div');
+        optionCard.className = 'option-item';
+        optionCard.dataset.idx = idx;
+        optionCard.onclick = () => selectOption(idx, optionCard);
+        
+        optionCard.innerHTML = `
+          <div class="control-indicator"></div>
+          <div class="option-text">${opt}</div>
+        `;
+        list.appendChild(optionCard);
+      });
+      
+      const actionBtn = document.getElementById('actionBtn');
+      actionBtn.textContent = "Ответить";
+      actionBtn.disabled = true;
+    }
+
+    function selectOption(index, el) {
+      if (isAnswered) return;
+      const pos = selectedIndices.indexOf(index);
+      if (pos > -1) {
+        selectedIndices.splice(pos, 1);
+        el.classList.remove('selected');
+      } else {
+        selectedIndices.push(index);
+        el.classList.add('selected');
+      }
+      document.getElementById('actionBtn').disabled = selectedIndices.length === 0;
+    }
+
+    function handleAction() {
+      const actionBtn = document.getElementById('actionBtn');
+      
+      if (!isAnswered) {
+        isAnswered = true;
+        const item = S.qs[S.ci];
+        const q = ticketsData[item.tId].questions[item.qIdx];
+        const optionElements = document.querySelectorAll('.option-item');
+        
+        const correctSet = new Set(q.correct);
+        const selectedSet = new Set(selectedIndices);
+        
+        let isCorrect = true;
+        if (correctSet.size !== selectedSet.size) {
+          isCorrect = false;
+        } else {
+          for (const idx of selectedSet) {
+            if (!correctSet.has(idx)) {
+              isCorrect = false;
+              break;
+            }
+          }
+        }
+        
+        S.total++;
+        const qKey = `${item.tId}_${item.qIdx}`;
+        
+        if (isCorrect) {
+          S.ok++;
+          sessionScore++;
+          const errPos = S.errors.indexOf(qKey);
+          if (errPos > -1) S.errors.splice(errPos, 1);
+        } else {
+          S.err++;
+          if (S.errors.indexOf(qKey) === -1) S.errors.push(qKey);
+        }
+        
+        save();
+        upStats();
+        
+        // Highlight logic (Correct = green, Wrong = red, Missed = yellow)
+        optionElements.forEach(el => {
+          const idx = parseInt(el.dataset.idx);
+          const isItemCorrect = correctSet.has(idx);
+          const isItemSelected = selectedSet.has(idx);
+          
+          if (isItemCorrect) {
+            if (isItemSelected) {
+              el.classList.add('correct');
+            } else {
+              el.classList.add('missed');
+            }
+          } else if (isItemSelected) {
+            el.classList.add('wrong');
+          }
+        });
+        
+        document.getElementById('explanationText').textContent = q.explanation;
+        document.getElementById('explanationBox').style.display = 'block';
+
+        if (S.ci + 1 < S.qs.length) {
+          actionBtn.textContent = "Следующий вопрос →";
+        } else {
+          actionBtn.textContent = "Завершить тест";
+        }
+      } else {
+        if (S.ci + 1 < S.qs.length) {
+          S.ci++;
+          loadQuestion();
+        } else {
+          showResults();
+        }
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quizScreen').classList.remove('active');
+      document.getElementById('resultsScreen').classList.add('active');
+      
+      const total = S.qs.length;
+      document.getElementById('resultsScore').innerHTML = `${sessionScore} <span>/ ${total}</span>`;
+      
+      const pct = (sessionScore / total) * 100;
+      let msg = "";
+      if (pct === 100) {
+        msg = "Идеально! 100% правильных ответов. Вы безупречно знаете квалиметрию и системный анализ!";
+      } else if (pct >= 80) {
+        msg = "Отличный результат! Высокий уровень знаний теории и методов В. И. Кириллова.";
+      } else if (pct >= 50) {
+        msg = "Хороший результат, но повторите математические модели и теорию решений.";
+      } else {
+        msg = "Тест не сдан. Рекомендуется повторить конспект и пособие Кириллова.";
+      }
+      document.getElementById('resultsText').textContent = msg;
+    }
+
+    function exitToMenu() {
+      document.getElementById('quizScreen').classList.remove('active');
+      document.getElementById('resultsScreen').classList.remove('active');
+      document.getElementById('selectScreen').classList.add('active');
       setMode('ticket');
     }
-  }
-}
 
-function save(){
-  safeStorage.setItem('tnis_s',JSON.stringify({ok:S.ok,err:S.err,total:S.total}));
-  safeStorage.setItem('tnis_e',JSON.stringify(S.errors));
-}
-
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-
-function setMode(m){
-  S.mode=m;
-  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
-  $('mode'+m.charAt(0).toUpperCase()+m.slice(1)).classList.add('active');
-  const tg=$('ticketGrid'),ws=$('welcomeScreen');
-
-  if(m==='ticket'){
-    tg.classList.remove('hidden');ws.classList.remove('hidden');
-    $('questionArea').classList.add('hidden');$('resultsScreen').classList.add('hidden');
-    $('progressWrap').classList.add('hidden');$('kbdHint').classList.add('hidden');
-    ws.innerHTML=`<div class="welcome-icon">⌨</div><h2>Выбери билет</h2><p>Доступны все 20 билетов по программе экзамена.</p>`;
-  } else {
-    tg.classList.add('hidden');ws.classList.add('hidden');
-    if(m==='random'){go(shuffle(Array.from({length:Q.length},(_,i)=>i)).slice(0,17));}
-    else if(m==='all'){go(shuffle(Array.from({length:Q.length},(_,i)=>i)));}
-    else if(m==='errors'){
-      if(!S.errors.length){ws.classList.remove('hidden');ws.innerHTML=`<div class="welcome-icon">▓</div><h2>Ошибок нет</h2><p>Все вопросы отвечены верно. Продолжай тренироваться.</p>`;return;}
-      go(shuffle([...S.errors]));
-    }
-  }
-}
-
-function pickTicket(n){
-  document.querySelectorAll('.t-btn').forEach(b=>b.classList.remove('active'));
-  $('t'+n).classList.add('active');S.ticket=n;
-  let idx=[...TK[n]];
-  go(shuffle(idx));
-}
-
-function go(indices){
-  S.qs=indices;S.ci=0;S.ans=[];S.locked=false;
-  $('welcomeScreen').classList.add('hidden');$('resultsScreen').classList.add('hidden');
-  $('questionArea').classList.remove('hidden');$('progressWrap').classList.remove('hidden');$('kbdHint').classList.remove('hidden');
-  render();
-}
-
-function render(){
-  S.locked=false;
-  const qi=S.qs[S.ci],q=Q[qi],tot=S.qs.length,n=S.ci+1;
-  const pct=Math.round(S.ci/tot*100);
-  $('pLabel').textContent=`вопрос ${n}/${tot}`;
-  $('pPct').textContent=pct+'%';
-  $('pFill').style.width=pct+'%';
-
-  const oi=q.o.map((_,i)=>i);shuffle(oi);
-  const keys=['1','2','3','4','5'];
-
-  $('questionArea').innerHTML=`
-    <div class="q-card">
-      <div class="q-meta">
-        <span class="q-num">#${n}/${tot}</span>
-        <span class="q-topic">${q.t}</span>
-      </div>
-      <div class="q-text">${q.q}</div>
-      <div class="opts" id="optsList">
-        ${oi.map((o,d)=>`<button class="opt" data-oi="${o}" data-qi="${qi}"><span class="opt-key">${keys[d]}</span><span>${q.o[o]}</span></button>`).join('')}
-      </div>
-      <div id="fbArea"></div>
-      <button class="next-btn hidden" id="nextBtn">${S.ci<S.qs.length-1?'далее →':'результаты →'}</button>
-    </div>`;
-
-  // Attach listeners after rendering (no inline onclick needed)
-  document.querySelectorAll('#optsList .opt').forEach(btn=>{
-    btn.addEventListener('click',function(){pick(+this.dataset.qi,+this.dataset.oi,this);});
-  });
-  $('nextBtn').addEventListener('click',next);
-}
-
-function pick(qi,oi,btn){
-  if(S.locked)return;S.locked=true;
-  const q=Q[qi],ok=oi===q.c;
-  S.total++;
-  if(ok){S.ok++;S.errors=S.errors.filter(i=>i!==qi);}
-  else{S.err++;if(!S.errors.includes(qi))S.errors.push(qi);}
-  S.ans.push({qi,sel:oi,ok});
-  upStats();save();
-
-  document.querySelectorAll('.opt').forEach(b=>{
-    const o=+b.dataset.oi;
-    b.classList.add('locked');
-    if(o===q.c)b.classList.add('is-correct');
-    else if(b===btn&&!ok)b.classList.add('is-wrong');
-  });
-
-  $('fbArea').innerHTML=ok
-    ?`<div class="feedback fb-ok">// верно</div>`
-    :`<div class="feedback fb-err">// неверно<div class="fb-answer">→ ${q.o[q.c]}</div></div>`;
-  $('nextBtn').classList.remove('hidden');
-}
-
-function next(){S.ci++;S.ci>=S.qs.length?results():render();}
-
-function results(){
-  $('questionArea').classList.add('hidden');$('progressWrap').classList.add('hidden');$('kbdHint').classList.add('hidden');
-  const ok=S.ans.filter(a=>a.ok).length,tot=S.ans.length,pct=Math.round(ok/tot*100);
-  let icon,title;
-  if(pct>=90){icon='█';title='отлично';}
-  else if(pct>=70){icon='▓';title='хорошо';}
-  else if(pct>=50){icon='▒';title='можно лучше';}
-  else{icon='░';title='нужно повторить';}
-
-  const wrongs=S.ans.filter(a=>!a.ok);
-  const rs=$('resultsScreen');rs.classList.remove('hidden');
-  const curMode=S.mode;
-  rs.innerHTML=`<div class="results">
-    <div class="r-hero"><div class="r-icon">${icon}</div><div class="r-title">${title}</div><div class="r-sub">${ok} из ${tot}</div></div>
-    <div class="r-stats">
-      <div class="r-stat"><div class="rv" style="color:var(--correct)">${ok}</div><div class="rl">верно</div></div>
-      <div class="r-stat"><div class="rv" style="color:var(--wrong)">${tot-ok}</div><div class="rl">ошибки</div></div>
-      <div class="r-stat"><div class="rv" style="color:var(--accent)">${pct}%</div><div class="rl">точность</div></div>
-    </div>
-    <div class="r-actions" id="rActions">
-      <button class="r-btn-primary" id="rRetry">// ещё раз</button>
-      <button class="r-btn-sec" id="rTickets">// билеты</button>
-      ${wrongs.length?`<button class="r-btn-sec" id="rErrors">// ошибки [${S.errors.length}]</button>`:''}
-    </div>
-    ${wrongs.length?`<div class="review-title">ошибки в этом тесте</div>${wrongs.map(a=>{const q=Q[a.qi];return`<div class="rev-item"><div class="rev-q">${q.q}</div><div class="rev-yours">✗ ${q.o[a.sel]}</div><div class="rev-right">→ ${q.o[q.c]}</div></div>`;}).join('')}`:''}
-  </div>`;
-  // Attach result action listeners
-  const rRetry=$('rRetry'),rTickets=$('rTickets'),rErrors=$('rErrors');
-  if(rRetry) rRetry.addEventListener('click',function(){setMode(curMode);});
-  if(rTickets) rTickets.addEventListener('click',function(){setMode('ticket');});
-  if(rErrors) rErrors.addEventListener('click',function(){setMode('errors');});
-}
-
-document.addEventListener('keydown',e=>{
-  if(e.key>='1'&&e.key<='5'){const bs=document.querySelectorAll('.opt');if(bs[+e.key-1]&&!S.locked)bs[+e.key-1].click();}
-  if((e.key==='Enter'||e.key==='ArrowRight')&&S.locked){const nb=$('nextBtn');if(nb)nb.click();}
-});
-
-// 1. Start the quiz UI immediately (hidden behind access screen)
-init();
-// 2. Check access — hides access screen if allowed, shows deny message otherwise
-checkAccess();
-</script>
+    window.onload = init;
+  </script>
 </body>
 </html>
